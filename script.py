@@ -11,7 +11,7 @@ def count_events(data, event_type):
         return 0
     events = data[['EventCode']]
     #tutaj zawężam, bo kategorie są jeszcze bardziej uszczegółowione, interesują mnie tylko pierwsze 2 cyfry kodu CAMEO
-    filtered = events.apply(lambda x:  int(x['EventCode'][:2]) , axis=1) 
+    filtered = events.apply(lambda x:  int(x['EventCode'][:2]) , axis=1)
     checked = filtered.apply(lambda x: 1 if x == event_type else 0 )
     return checked.sum()
 #print(count_events(results,7))
@@ -39,3 +39,17 @@ def actors_action_geo(data, cameo_1, cameo_2):
     filter2 = results["Actor2Code"]==cameo_2
     return results[filter1 & filter2]
 # print(actors_action_geo(results,"scoGOV",'GBR' ))
+
+def events_between_countries(cameo_1, cameo_2, date):
+    df = gd1.Search(date,table='events',output='pd')
+    df = df.loc[(df['Actor1Code'] == cameo_1) & (df['Actor2Code'] == cameo_2)]
+    return df
+
+def count_events_between_countries(actor1Name, actor2Name, date):
+    events = events_between_countries(actor1Name, actor2Name, date)
+    return len(events.index)
+
+
+print(events_between_countries("POL", "FRA", ['2020-05-07', '2020-05-08']))
+
+print(count_events_between_countries("POL", "FRA", ['2020-05-07', '2020-05-08']))
