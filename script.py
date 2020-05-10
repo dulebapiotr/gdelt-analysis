@@ -37,6 +37,23 @@ def count_events(data, event_type):
     checked = filtered.apply(lambda x: 1 if x == event_type else 0 )
     return checked.sum()
 
-print(count_events(results, 21))
 
 
+# zwraca datafame z ilościa i % występowania poszczególnych typów zdarzeń w danym datasecie
+def event_types_ratio(data):
+    sum = data.shape[0]
+    dictionary = {"event_type_cameo": [], "count": [], "ratio": []}
+    for x in range (1,21):
+        count = count_events(data, x)
+        dictionary["event_type_cameo"].append(x)
+        dictionary["count"].append(count)
+        dictionary["ratio"].append(count/sum)
+        
+
+    result = pd.DataFrame(data=dictionary)
+    result.set_index('event_type_cameo')
+    return result
+
+
+
+print(event_types_ratio(results))
