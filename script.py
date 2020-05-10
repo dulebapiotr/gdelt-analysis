@@ -45,11 +45,18 @@ def events_between_countries(cameo_1, cameo_2, date):
     df = df.loc[(df['Actor1Code'] == cameo_1) & (df['Actor2Code'] == cameo_2)]
     return df
 
-def count_events_between_countries(actor1Name, actor2Name, date):
-    events = events_between_countries(actor1Name, actor2Name, date)
+def count_events_between_countries(cameo_1, cameo_2, date):
+    events = events_between_countries(cameo_1, cameo_2, date)
     return len(events.index)
 
+def search_biggest_impact_on_countries(cameo_1, cameo_2, date):
+    df = events_between_countries(cameo_1, cameo_2, date)
+    df = df.loc[(df['AvgTone'] >= 10) | (df['AvgTone'] <= -10)]
+    print(df)
 
-print(events_between_countries("POL", "FRA", ['2020-05-07', '2020-05-08']))
 
-print(count_events_between_countries("POL", "FRA", ['2020-05-07', '2020-05-08']))
+# print(events_between_countries("POL", "FRA", ['2020-05-07', '2020-05-08']))
+
+# print(count_events_between_countries("POL", "FRA", ['2020-05-07', '2020-05-08']))
+
+search_biggest_impact_on_countries('USA', 'RUS', '2001-09-11')
