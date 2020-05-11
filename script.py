@@ -2,7 +2,7 @@ import gdelt
 import pandas as pd
 # Version 1 queries
 gd1 = gdelt.gdelt(version=1)
-results= gd1.Search('2020-05-08',table='events',output='pd') # to już jest DataFrame
+results= gd1.Search('2020-05-10',table='events',output='pd') # to już jest DataFrame
 
 
 #zwraca liczbe rodzajów wydarzeń w danym datasecie, biorę pod uwagę 2 pierwsze cyfry kodu CAMEO
@@ -11,7 +11,7 @@ def count_events(data, event_type):
         return 0
     events = data[['EventCode']]
     #tutaj zawężam, bo kategorie są jeszcze bardziej uszczegółowione, interesują mnie tylko pierwsze 2 cyfry kodu CAMEO
-    filtered = events.apply(lambda x:  int(x['EventCode'][:2]) , axis=1)
+    filtered = events.apply(lambda x:  int(x['EventCode'][:2]) , axis=1) 
     checked = filtered.apply(lambda x: 1 if x == event_type else 0 )
     return checked.sum()
 #print(count_events(results,7))
@@ -37,26 +37,27 @@ def actors_action_geo(data, cameo_1, cameo_2):
     results = data[["Actor1Code","Actor2Code","ActionGeo_Lat","ActionGeo_Long"]]
     filter1 = results["Actor1Code"]==cameo_1
     filter2 = results["Actor2Code"]==cameo_2
+    
     return results[filter1 & filter2]
 # print(actors_action_geo(results,"scoGOV",'GBR' ))
 
-def events_between_countries(cameo_1, cameo_2, date):
-    df = gd1.Search(date,table='events',output='pd')
-    df = df.loc[(df['Actor1Code'] == cameo_1) & (df['Actor2Code'] == cameo_2)]
-    return df
+# punkt 4 analiz ilościowych - dla wybranego kraju, który jest jako Actor1, wylicza średnią miarę Goldsteina z krajami które są jako Actor2
+def avg_goldstein_with_other_countries(dataframe, cameo1):
+    data = dataframe[["Actor1Code","Actor2Code","AvgTone"]]
+    dictionary={}
 
-def count_events_between_countries(cameo_1, cameo_2, date):
-    events = events_between_countries(cameo_1, cameo_2, date)
-    return len(events.index)
+    for index, row in data.iterrows():
+        if not row["Actor2Code"] in dictionary:
+            dictionary[row["Actor2Code"]] = (row["AvgTone"],1)
+        else:
+            num = dictionary[row["Actor2Code"]][1]
+            avg=  dictionary[row["Actor2Code"]][0]
+            new_value = row["AvgTone"]
+            dictionary[row["Actor2Code"]] = ((avg*num+new_value)/(num+1), num+1)
+    result = pd.DataFrame(data=dictionary).T
+    result.columns=[ "avg_goldstein", "events_count"]
+    return result
 
-def search_biggest_impact_on_countries(cameo_1, cameo_2, date):
-    df = events_between_countries(cameo_1, cameo_2, date)
-    df = df.loc[(df['AvgTone'] >= 10) | (df['AvgTone'] <= -10)]
-    print(df)
 
 
-# print(events_between_countries("POL", "FRA", ['2020-05-07', '2020-05-08']))
-
-# print(count_events_between_countries("POL", "FRA", ['2020-05-07', '2020-05-08']))
-
-search_biggest_impact_on_countries('USA', 'RUS', '2001-09-11')
+print(avg_goldstein_with_other_countries(results, "GBR"))
