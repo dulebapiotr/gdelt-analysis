@@ -64,7 +64,20 @@ def value_in_time(data, value):
     result = data[[value, "SQLDATE"]]
     result.sort_values(by=["SQLDATE"])
     return result
+#print(value_in_time(results, "AvgTone"))
 
 
+def events_between_countries(cameo_1, cameo_2, date):
+    df = gd1.Search(date,table='events',output='pd')
+    df = df.loc[(df['Actor1Code'] == cameo_1) & (df['Actor2Code'] == cameo_2)]
+    return df
 
-print(value_in_time(results, "AvgTone"))
+def count_events_between_countries(cameo_1, cameo_2, date):
+    events = events_between_countries(cameo_1, cameo_2, date)
+    return len(events.index)
+
+def search_biggest_impact_on_countries(cameo_1, cameo_2, date):
+    df = events_between_countries(cameo_1, cameo_2, date)
+    df = df.loc[(df['AvgTone'] >= 10) | (df['AvgTone'] <= -10)]
+    print(df)
+search_biggest_impact_on_countries('USA', 'RUS', '2001-09-11')
