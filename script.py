@@ -58,3 +58,13 @@ def avg_goldstein_with_other_countries(dataframe, cameo1):
     result.columns=[ "avg_goldstein", "events_count"]
     return result
 #print(avg_goldstein_with_other_countries(results, "GBR"))
+
+#punkt 5 analiz ilościowych - dla danej kolumny(jej nazwy) pokazuje jej wartości w czasie (uporządkowanym), nie wiem czy o to tutaj chodzi XD
+def value_in_time(data, value):
+    result = data[[value, "SQLDATE"]]
+    result.sort_values(by=["SQLDATE"])
+    return result
+
+
+
+print(value_in_time(results, "AvgTone"))
