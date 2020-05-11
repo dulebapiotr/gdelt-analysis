@@ -57,7 +57,4 @@ def avg_goldstein_with_other_countries(dataframe, cameo1):
     result = pd.DataFrame(data=dictionary).T
     result.columns=[ "avg_goldstein", "events_count"]
     return result
-
-
-
-print(avg_goldstein_with_other_countries(results, "GBR"))
+#print(avg_goldstein_with_other_countries(results, "GBR"))
