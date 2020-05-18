@@ -34,6 +34,10 @@ def event_types_ratio(data):
     result.set_index('event_type_cameo')
     return result
 
+def get_event_types_ratio(date):
+    datas = gd1.Search(date, table='events', output='pd')
+    return event_types_ratio(datas)
+
 
 # print(event_types_ratio(results))
 

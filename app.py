@@ -8,10 +8,16 @@ app = Flask(__name__)
 
 gd1 = gdelt.gdelt(version=1)
 
-@app.route('/')
-def hello():
+@app.route('/ev_countries')
+def ev_countries():
     x = scripts.events_between_countries("POL", "FRA", ['2020-05-07', '2020-05-08'])
     return render_template("analysis.html", name="events_between_countries", data=x)
+
+@app.route('/ev_ratio')
+def ev_ratio():
+    x = scripts.get_event_types_ratio('2020-05-07')
+    return render_template("analysis.html", name="event_types_ratio", data=x)
+
 
 
 if __name__ == '__main__':
