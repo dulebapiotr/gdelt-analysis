@@ -4,7 +4,7 @@ import numpy as np
 
 # Version 1 queries
 gd1 = gdelt.gdelt(version=1)
-results = gd1.Search('2020-05-10', table='events', output='pd')  # to już jest DataFrame
+results =1#= gd1.Search('2020-05-10', table='events', output='pd')  # to już jest DataFrame
 
 
 # zwraca liczbe rodzajów wydarzeń w danym datasecie, biorę pod uwagę 2 pierwsze cyfry kodu CAMEO
@@ -139,4 +139,4 @@ def get_percentile(data, column_name, percentile):
     return np.percentile(data[column_name], percentile)
 
 
-search_biggest_impact_on_countries('USA', 'RUS', '2001-09-11')
+#search_biggest_impact_on_countries('USA', 'RUS', '2001-09-11')
