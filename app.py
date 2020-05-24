@@ -11,7 +11,7 @@ gd1 = gdelt.gdelt(version=1)
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def hello():
     x = scripts.events_between_countries("POL", "FRA", ['2020-05-07', '2020-05-08'])
     return render_template("analysis.html", name="events_between_countries", data=x)
