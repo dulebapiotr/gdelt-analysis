@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Df from './components/Df.vue';
+import App from './App.vue'
 
 Vue.use(Router);
 
@@ -10,8 +10,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Df',
-      component: Df,
+      name: 'App',
+      component: App,
     }
   ],
 });
