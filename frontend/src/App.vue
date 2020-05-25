@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <Df msg="Welcome to Your Vue.js App"/>
+    <Chart/>
   </div>
 </template>
 
 <script>
-import Df from './components/Df.vue'
+import Chart from './components/Chart.vue'
 
 export default {
   name: 'App',
   components: {
-    Df
+    Chart
   }
 }
 </script>
