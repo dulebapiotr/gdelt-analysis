@@ -13,10 +13,12 @@ gd1 = gdelt.gdelt(version=1)
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+
 @app.route('/dataframes', methods=['POST'])
 def dataframe():
     data = request.get_json()
-    start = data.get('start')[0:10]  # possible the dumbest way to format a date, but whatevah. Normally it would be '2020-05-25 06:04:30,773' so i cut it short
+    start = data.get('start')[
+            0:10]  # possible the dumbest way to format a date, but whatevah. Normally it would be '2020-05-25 06:04:30,773' so i cut it short
     stop = data.get('stop')[0:10]
     if start == stop:
         date = start
@@ -28,5 +30,3 @@ def dataframe():
 
 if __name__ == '__main__':
     app.run()
-
-
