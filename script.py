@@ -121,7 +121,7 @@ def avg_goldstein_with_other_countries(dataframe, cameo1):
 # CAMEO)
 def actors_action_geo(data, cameo_1, cameo_2):
     results = data[["Actor1Code", "Actor2Code", "ActionGeo_Lat", "ActionGeo_Long"]]
-    filter1 = results["Actor1Code"] == cameo_1
-    filter2 = results["Actor2Code"] == cameo_2
+    filter1 = results["Actor1Code"] == cameo_1 or results["Actor2Code"] == cameo_1
+    filter2 = results["Actor2Code"] == cameo_2 or results["Actor1Code"] == cameo_2
 
     return results[filter1 & filter2]
