@@ -8,6 +8,7 @@ import gdelt
 import datetime
 import analysis_manager 
 import Session
+import json
 app = Flask(__name__)
 
 gd1 = gdelt.gdelt(version=1)
@@ -27,9 +28,10 @@ def dataframe():
     data = gd1.Search(date, table='events', output='pd')
     return data.to_json()
 
-@app.route('/actors-action-geo', methods=['GET'])
+@app.route('/actors-action-geo', methods=['POST'])
 def actors_action_geo():
     data = request.get_json()
+    print(request.get_json())
     start = data.get('start')[0:10]
     stop = data.get('stop')[0:10]
     actor1 = data.get('actor1')
@@ -40,7 +42,16 @@ def actors_action_geo():
         date = [start, stop]
     data = gd1.Search(date, table='events', output='pd')
     result = scripts.actors_action_geo(data, actor1, actor2)
-    return result.to_json()
+    print(result)
+    lat = result["ActionGeo_Lat"]
+    longg = result["ActionGeo_Long"]
+    res = []
+    for x, val in lat.items():
+        print(val)
+        res.append((val,longg[x]))
+    print(res)
+    print(json.dumps(res))
+    return json.dumps(res)
 
 
 # stworzenie nowej sesji (zakres czasu)

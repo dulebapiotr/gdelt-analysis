@@ -2,16 +2,20 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <Chart/>
+    <img alt="Vue logo" src="./assets/logo.png">
+    <Map/>
   </div>
 </template>
 
 <script>
 import Chart from './components/Chart.vue'
+import Map from './components/Map.vue'
 
 export default {
   name: 'App',
   components: {
-    Chart
+    Chart,
+    Map
   }
 }
 </script>
