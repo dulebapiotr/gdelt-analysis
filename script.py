@@ -1,3 +1,5 @@
+from typing import Dict
+
 import gdelt
 import pandas as pd
 import numpy as np
@@ -6,9 +8,10 @@ import numpy as np
 # TODO: split into separate files
 
 # Graphable analyses
-# TODO: normalize APIs (parameters and return types)
 # zwraca liczbe rodzajów wydarzeń w danym datasecie, biorę pod uwagę 2 pierwsze cyfry kodu CAMEO
-def count_events(data, event_type):
+def count_events(data: pd.DataFrame, args: Dict):
+    # TODO: Error handling when invalid args
+    event_type = args["event_type"]
     if not 1 <= event_type <= 20:
         return 0
     events = data[['EventCode']]
@@ -20,21 +23,28 @@ def count_events(data, event_type):
 
 # punkt 5 analiz ilościowych - dla danej kolumny(jej nazwy) pokazuje jej wartości w czasie (uporządkowanym),
 # nie wiem czy o to tutaj chodzi XD
-def value_in_time(data, value):
+def value_in_time(data: pd.DataFrame, args: Dict):
+    # TODO: Error handling when invalid args
+    value = args['value']
     result = data[[value, "SQLDATE"]]
     result.sort_values(by=["SQLDATE"])
     return result
 
 
-def polynomial_fit(data, column_name, degree):
+def polynomial_fit(data: pd.DataFrame, args: Dict):
+    # TODO: Error handling when invalid args
+    column_name = args["column_name"]
+    degree = args["degree"]
     if column_name not in data.columns:
         raise Exception
     vector = data[column_name]
     polynomial = np.polynomial.polynomial.Polynomial.fit(y=vector, x=range(0, len(vector)), deg=degree)
-    return polynomial[0].convert().coef  # działało bez [0] ale pycharm krzyczał xD
+    return polynomial[0].convert().coef
 
 
-def get_mean_std_var(data, column_name):
+def get_mean_std_var(data: pd.DataFrame, args: Dict):
+    # TODO: Error handling when invalid args
+    column_name = args["column_name"]
     if column_name not in data.columns:
         raise Exception
     vector = data[column_name]
@@ -43,13 +53,17 @@ def get_mean_std_var(data, column_name):
             "variance": vector.var()}
 
 
-def get_median(data, column_name):
+def get_median(data: pd.DataFrame, args: Dict):
+    # TODO: Error handling when invalid args
+    column_name = args["column_name"]
     if column_name not in data.columns:
         raise Exception
     return np.median(data[column_name])
 
 
-def get_range_ptp(data, column_name):
+def get_range_ptp(data: pd.DataFrame, args: Dict):
+    # TODO: Error handling when invalid args
+    column_name = args["column_name"]
     if column_name not in data.columns:
         raise Exception
     vector = data[column_name]
@@ -58,7 +72,10 @@ def get_range_ptp(data, column_name):
             "ptp": np.ptp(vector.var)}
 
 
-def get_percentile(data, column_name, percentile):
+def get_percentile(data: pd.DataFrame, args: Dict):
+    # TODO: Error handling when invalid args
+    column_name = args["column_name"]
+    percentile = args["percentile"]
     if column_name not in data.columns:
         raise Exception
     elif not 0 <= percentile <= 100:
@@ -67,7 +84,7 @@ def get_percentile(data, column_name, percentile):
 
 
 # zwraca datafame z ilościa i % występowania poszczególnych typów zdarzeń w danym datasecie
-def event_types_ratio(data):
+def event_types_ratio(data: pd.DataFrame, _):
     event_count = data.shape[0]  # no bo tyle jest wszystkich zdarzeń co rekordów
     dictionary = {"event_type_cameo": [], "count": [], "ratio": []}
     for x in range(1, 21):
@@ -83,28 +100,26 @@ def event_types_ratio(data):
 # Map-oriented analyses
 
 
-def events_between_countries(cameo_1, cameo_2, date):
-    df = gd1.Search(date, table='events', output='pd')
-    df = df.loc[(df['Actor1Code'] == cameo_1) & (df['Actor2Code'] == cameo_2)]
-    return df
+def events_between_countries(data: pd.DataFrame, cameo_1, cameo_2):
+    return data.loc[(data['Actor1Code'] == cameo_1) & (data['Actor2Code'] == cameo_2)]
 
 
-def count_events_between_countries(cameo_1, cameo_2, date):
-    events = events_between_countries(cameo_1, cameo_2, date)
+def count_events_between_countries(data: pd.DataFrame, cameo_1, cameo_2):
+    events = events_between_countries(data, cameo_1, cameo_2)
     return len(events.index)
 
 
-def search_biggest_impact_on_countries(cameo_1, cameo_2, date):
-    df = events_between_countries(cameo_1, cameo_2, date)
+def search_biggest_impact_on_countries(data: pd.DataFrame, cameo_1, cameo_2):
+    df = events_between_countries(data, cameo_1, cameo_2)
     df = df.loc[(df['AvgTone'] >= 10) | (df['AvgTone'] <= -10)]
     print(df)
 
-
-def avg_goldstein_with_other_countries(dataframe, cameo1):
-    data = dataframe[["Actor1Code", "Actor2Code", "AvgTone"]]
+# TODO: Gaben fix pls | czemu tu się nie używa cameo1?
+def avg_goldstein_with_other_countries(data: pd.DataFrame, cameo1):
+    df = data[["Actor1Code", "Actor2Code", "AvgTone"]]
     dictionary = {}
 
-    for index, row in data.iterrows():
+    for index, row in df.iterrows():
         if not row["Actor2Code"] in dictionary:
             dictionary[row["Actor2Code"]] = (row["AvgTone"], 1)
         else:
@@ -119,9 +134,8 @@ def avg_goldstein_with_other_countries(dataframe, cameo1):
 
 # zwraca dataframe z współrzędnymi geograficznymi wydarzeń zachocących pomiędzy daną parą aktorów (podajemy ich kody
 # CAMEO)
-def actors_action_geo(data, cameo_1, cameo_2):
+def actors_action_geo(data: pd.DataFrame, cameo_1, cameo_2):
     results = data[["Actor1Code", "Actor2Code", "ActionGeo_Lat", "ActionGeo_Long"]]
     filter1 = (results["Actor1Code"] == cameo_1) | (results["Actor2Code"] == cameo_1)
     filter2 = (results["Actor2Code"] == cameo_2) | (results["Actor1Code"] == cameo_2)
-
     return results[filter1 & filter2]

@@ -15,9 +15,13 @@ quantitative_analysis_dict = {
 }
 
 
-def add_analysis(session: Session, data_name: str, analysis: str, params: list) -> Tuple[str, pd.DataFrame]:
+def add_analysis(session: Session, data_name: str, analysis: str, params: Dict[str, any]) -> Tuple[str, pd.DataFrame]:
     data_dataframe = session.get_data(data_name)
     analysis_func = quantitative_analysis_dict[analysis]
-    result_dataframe = analysis_func(data_dataframe)
-    result_name = session.add_data(result_dataframe, data_name + analysis)
-    return result_name, result_dataframe
+    try:
+        result_dataframe = analysis_func(data_dataframe, params)
+        result_name = session.add_data(result_dataframe, data_name + analysis)
+        return result_name, result_dataframe
+    except ValueError:
+        # todo: change to error 400
+        return "invalid argument", data_dataframe
