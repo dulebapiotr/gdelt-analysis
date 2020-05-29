@@ -116,7 +116,9 @@ def search_biggest_impact_on_countries(data: pd.DataFrame, cameo_1, cameo_2):
 
 # TODO: Gaben fix pls | czemu tu się nie używa cameo1?
 def avg_goldstein_with_other_countries(data: pd.DataFrame, cameo1):
-    df = data[["Actor1Code", "Actor2Code", "AvgTone"]]
+    df_trim = data.loc[data['Actor1Code'] == cameo1]
+    df = df_trim[["Actor1Code", "Actor2Code", "AvgTone"]]
+
     dictionary = {}
 
     for index, row in df.iterrows():
@@ -130,8 +132,6 @@ def avg_goldstein_with_other_countries(data: pd.DataFrame, cameo1):
     result = pd.DataFrame(data=dictionary).T
     result.columns = ["avg_goldstein", "events_count"]
     return result
-
-
 # zwraca dataframe z współrzędnymi geograficznymi wydarzeń zachocących pomiędzy daną parą aktorów (podajemy ich kody
 # CAMEO)
 def actors_action_geo(data: pd.DataFrame, cameo_1, cameo_2):
