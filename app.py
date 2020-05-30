@@ -21,6 +21,20 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 
 def get_gdelt_data(start, stop) -> pd.DataFrame:
+    res_df = pd.DataFrame()
+    # nie wiem czy te 2 linijki zadziałąją xD reszta powinna
+    date_start = int(datetime.datetime.strptime(start, '%Y%m%d'))
+    date_stop = int(datetime.datetime.strptime(stop, '%Y%m%d'))
+    for i in range(date_start, date_stop+1):
+        df = db.get_dataframe(i,i)
+        if df.shape[0] >=1 :
+            pd.concat([res_df,df])
+        else:
+            df = gd1.Search(str(i),table='events', output='pd')
+            db.insert_dataframe(df)
+            pd.concat([res_df,df])
+
+    return res_df
     # TODO: implement
     #sprawdzić czy dni są zapisane
     #jak tak to je wczytać, jak nie ściągnąć i dodać do bazy
