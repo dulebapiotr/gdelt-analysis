@@ -19,12 +19,12 @@ class Database(object):
         #first we have to split out dataframe to pieces, each max 16MB.
         #i just cut it to 10k row pieces xD
         row_count = input_data.shape[0]
-        for i in range(0,row_count,10000):
+        for i in range(0,row_count,70000):
             ceil=0
-            if i+10000>row_count:
+            if i+70000>row_count:
                 ceil=row_count
             else:
-                ceil = i+10000
+                ceil = i+70000
             chunk = input_data.truncate(before= i, after=ceil)
             #here we can insert chunk to database (it has less than 16MB)
             days_in_dataframe = chunk.DATEADDED.unique()
