@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
 import gdelt
@@ -6,27 +6,30 @@ import script as scripts
 from flask_cors import CORS
 import gdelt
 import datetime
-import analysis_manager 
-import Session
+import analysis_manager
+from Session import Session
 import json
+
 app = Flask(__name__)
 
 gd1 = gdelt.gdelt(version=1)
-session = Session.Session('2020-05-24')
+session: Session = Session()
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-#dodanie danych do analizy (zapytanie do gdelta)
-@app.route('/dataframes', methods=['POST'])
-def dataframe():
-    data = request.get_json()
-    start = data.get('start')[0:10]  # possible the dumbest way to format a date, but whatevah. Normally it would be '2020-05-25 06:04:30,773' so i cut it short
-    stop = data.get('stop')[0:10]
-    if start == stop:
-        date = start
-    else:
-        date = [start, stop]
-    data = gd1.Search(date, table='events', output='pd')
-    return data.to_json()
+
+# dodanie danych do analizy (zapytanie do gdelta)
+# @app.route('/dataframes', methods=['POST'])
+# def dataframe():
+#     data = request.get_json()
+#     start = data.get('start')
+#     stop = data.get('stop')
+#     if start == stop:
+#         date = start
+#     else:
+#         date = [start, stop]
+#     data = gd1.Search(date, table='events', output='pd')
+#     return data.to_json()
+
 
 @app.route('/actors-action-geo', methods=['POST'])
 def actors_action_geo():
@@ -48,7 +51,7 @@ def actors_action_geo():
     res = []
     for x, val in lat.items():
         print(val)
-        res.append((val,longg[x]))
+        res.append((val, longg[x]))
     print(res)
     print(json.dumps(res))
     return json.dumps(res)
@@ -58,41 +61,45 @@ def actors_action_geo():
 @app.route('/new_session', methods=['POST'])
 def new_session():
     data = request.get_json()
-    start = data.get('start')[0:10] 
-    stop = data.get('stop')[0:10]
-    time_range = [start, stop]
+    start = data.get('start')
+    stop = data.get('stop')
     if start == stop:
-        date = start
+        time_range = start
+    else:
+        time_range = [start, stop]
     df = gd1.Search(time_range, table='events', output='pd')
-    global session 
-    session = Session.Session(time_range)
-    session.add_data(df, "dataframe")
-    return df.to_json()
-#pobranie danych z sesji (void) - chyba jednak nie jkest void xD
+    global session
+    session = Session()
+    session.add_data(df, "raw_result")
+    return df.to_json()[:100]  # to stanowczo za duże żeby przesłać jsonem
 
 
-
-@app.route('/get_session', methods=["POST"])
+# pobranie danych z sesji (void) - chyba jednak nie jkest void xD
+@app.route('/get_session', methods=["GET"])
 def get_session():
+    global session
+    return jsonify(session.get_all_data())
+
+
+@app.route('/get_analysis', methods=["POST"])
+def get_analysis():
+    global session
     data = request.get_json()
     name = data.get('name')
-    return session.get_data(name).to_json
+    return session.get_data(name)
 
 
 @app.route('/add_analysis', methods=["POST"])
-
 def add_analysis():
     data = request.get_json()
     analysis_name = data.get('analysis_name')
     df_name = data.get('df_name')
     params = data.get('params')
+    print(type(params))
+    print(params)
     result_name, result_dataframe = analysis_manager.add_analysis(session, df_name, analysis_name, params)
-    return tuple(result_name, result_dataframe)
-
-
+    return jsonify([result_name, result_dataframe])
 
 
 if __name__ == '__main__':
     app.run()
-
-

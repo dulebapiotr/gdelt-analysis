@@ -75,7 +75,7 @@ def get_range_ptp(data: pd.DataFrame, args: Dict):
 def get_percentile(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     column_name = args["column_name"]
-    percentile = args["percentile"]
+    percentile = int(args["percentile"])
     if column_name not in data.columns:
         raise Exception
     elif not 0 <= percentile <= 100:

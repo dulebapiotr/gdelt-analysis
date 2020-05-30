@@ -2,9 +2,11 @@ import pandas as pd
 
 
 class Session:
-    def __init__(self, time_range, ):  # jaki typ będzie miało
-        self.time_range = time_range
+    def __init__(self):  # jaki typ będzie miało
         self.stored_data = {}
+
+    def get_all_data(self):
+        return list(self.stored_data.keys())
 
     def get_data(self, name: str):
         if name in self.stored_data:
