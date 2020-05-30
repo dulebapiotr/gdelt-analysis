@@ -9,6 +9,7 @@ import datetime
 import analysis_manager
 from Session import Session
 import json
+import database_csv as db
 
 app = Flask(__name__)
 
@@ -16,19 +17,9 @@ gd1 = gdelt.gdelt(version=1)
 session: Session = Session()
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+def get_gdelt_data(start, stop):
+    # TODO: implement
 
-# dodanie danych do analizy (zapytanie do gdelta)
-# @app.route('/dataframes', methods=['POST'])
-# def dataframe():
-#     data = request.get_json()
-#     start = data.get('start')
-#     stop = data.get('stop')
-#     if start == stop:
-#         date = start
-#     else:
-#         date = [start, stop]
-#     data = gd1.Search(date, table='events', output='pd')
-#     return data.to_json()
 
 
 @app.route('/actors-action-geo', methods=['POST'])
@@ -81,12 +72,12 @@ def get_session():
     return jsonify(session.get_all_data())
 
 
-@app.route('/get_analysis', methods=["POST"])
+@app.route('/get_analysis', methods=["GET"])
 def get_analysis():
     global session
     data = request.get_json()
     name = data.get('name')
-    return session.get_data(name)
+    return session.get_data(name).to_json()
 
 
 @app.route('/add_analysis', methods=["POST"])

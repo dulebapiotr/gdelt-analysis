@@ -14,7 +14,7 @@ class Session:
         else:
             raise DataNotFoundException
 
-    def add_data(self, data: pd.DataFrame, name: str) -> str:
+    def add_data(self, data, name: str) -> str:
         """
         Attempts to add data DataFrame to stored_data at key name.
         If name is already taken, a new name is generated and used as key.
