@@ -20,25 +20,22 @@ session: Session = Session()
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 
-def get_gdelt_data(start, stop) -> pd.DataFrame:
+def get_gdelt_data(start: str, stop: str) -> pd.DataFrame:
     res_df = pd.DataFrame()
-    # nie wiem czy te 2 linijki zadziałąją xD reszta powinna
-    date_start = int(datetime.datetime.strptime(start, '%Y%m%d'))
-    date_stop = int(datetime.datetime.strptime(stop, '%Y%m%d'))
-    for i in range(date_start, date_stop+1):
-        df = db.get_dataframe(i,i)
-        if df.shape[0] >=1 :
-            pd.concat([res_df,df])
+    start_time = strptime(start, "%a, %d %b %Y %H:%M:%S %Z")
+    stop_time = strptime(stop, "%a, %d %b %Y %H:%M:%S %Z")
+    date_start = int(strftime('%Y%m%d', start_time))
+    date_stop = int(strftime('%Y%m%d', stop_time))
+    for i in range(date_start, date_stop + 1):
+        df = db.get_dataframe(i, i)
+        if df.shape[0] >= 1:
+            pd.concat([res_df, df])
         else:
-            df = gd1.Search(str(i),table='events', output='pd')
+            df = gd1.Search(str(i), table='events', output='pd')
             db.insert_dataframe(df)
-            pd.concat([res_df,df])
+            pd.concat([res_df, df])
 
     return res_df
-    # TODO: implement
-    #sprawdzić czy dni są zapisane
-    #jak tak to je wczytać, jak nie ściągnąć i dodać do bazy
-    #zwrócić DFa z dniami
 
 
 @app.route('/actors-action-geo', methods=['POST'])
@@ -74,10 +71,9 @@ def new_session():
     start = data.get('start')
     stop = data.get('stop')
     if start == stop:
-        time_range = start
+        df = get_gdelt_data(start, start)
     else:
-        time_range = (start, stop)
-    df = get_gdelt_data(time_range)
+        df = get_gdelt_data(start, start)
     global session
     session = Session()
     session.add_data(df, "raw_result")
