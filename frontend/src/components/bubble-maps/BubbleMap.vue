@@ -17,24 +17,13 @@ export default {
   props: ['mapData'],
 
   methods: {
-    drawMap () {
+    drawMap (bubbleMapData) {
       /* global AmCharts */
-      const minBulletSize = 3
-      const maxBulletSize = 70
-      let min = Infinity
-      let max = -Infinity
+      //const minBulletSize = 3
+      //const maxBulletSize = 70
+      //let min = Infinity
+      //let max = -Infinity
       AmCharts.theme = AmCharts.themes.light
-
-      // get min and max values
-      this.mapData.data.forEach((dataItem) => {
-        const value = dataItem.value
-        if (value < min) {
-          min = value
-        }
-        if (value > max) {
-          max = value
-        }
-      })
 
       // build map
       const map = new AmCharts.AmMap()
@@ -60,38 +49,51 @@ export default {
 
       // create circle for each country
       // it's better to use circle square to show difference between values, not a radius
-      const maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI
-      const minSquare = minBulletSize * minBulletSize * 2 * Math.PI
+      //const maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI
+      //const minSquare = minBulletSize * minBulletSize * 2 * Math.PI
 
+      console.log(bubbleMapData);
       // create circle for each country
-      this.mapData.data.forEach((dataItem) => {
-        const value = dataItem.value
+      bubbleMapData.forEach((dataItem) => {
+        console.log(dataItem);
+        //const value = dataItem.value
         // calculate size of a bubble
-        let square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare
-        if (square < minSquare) {
-          square = minSquare
-        }
-        const size = Math.sqrt(square / (Math.PI * 2))
-        const id = dataItem.code
+        //let square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare
+        //if (square < minSquare) {
+        //  square = minSquare
+        //}
+        //const size = Math.sqrt(square / (Math.PI * 2))
+        //const id = dataItem.code
         dataProvider.images.push({
           type: 'circle',
-          width: size,
-          height: size,
-          color: dataItem.color,
-          longitude: this.mapData.latlong[id].longitude,
-          latitude: this.mapData.latlong[id].latitude,
-          title: dataItem.name,
-          value: value,
+          width: 1,
+          height: 1,
+          color: '#FFFFFF',
+          longitude: dataItem[1],
+          latitude: dataItem[0],
+          title: "",
+          value: 0,
         })
       })
+      console.log(dataProvider.images);
 
       map.dataProvider = dataProvider
       map.write(this.$el)
+      console.log("koniec");
+      console.log(this);
+      console.log(map);
+      console.log("koniec");
     },
+  mounted () {
+    console.log("dziala");
+
+    while(this.$parent.bubbleMapDatga == null){
+      console.log("wait");
+    }
+    this.drawMap(this.$parent.bubbleMapData);
+    console.log(this);
   },
 
-  mounted () {
-    this.drawMap()
   },
 }
 </script>
