@@ -8,8 +8,8 @@ def insert_dataframe(input_data: pd.DataFrame):
     file.close()
 
 
-def get_dataframe(startDate: int, stopDate: int):
+def get_dataframe(start_date: int, stop_date: int):
     input_data = open("data.csv", "r").read()
     df = pd.read_csv(input_data)
-    select = df.loc[df['DATEADDED'].isin(range(startDate, stopDate + 1))]
+    select = df.loc[df['DATEADDED'].isin(range(start_date, stop_date + 1))]
     return select

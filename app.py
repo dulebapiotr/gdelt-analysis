@@ -1,3 +1,5 @@
+from time import strptime, strftime
+
 from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
@@ -17,9 +19,12 @@ gd1 = gdelt.gdelt(version=1)
 session: Session = Session()
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-def get_gdelt_data(start, stop):
-    # TODO: implement
 
+def get_gdelt_data(start, stop) -> pd.DataFrame:
+    # TODO: implement
+    #sprawdzić czy dni są zapisane
+    #jak tak to je wczytać, jak nie ściągnąć i dodać do bazy
+    #zwrócić DFa z dniami
 
 
 @app.route('/actors-action-geo', methods=['POST'])
@@ -57,8 +62,8 @@ def new_session():
     if start == stop:
         time_range = start
     else:
-        time_range = [start, stop]
-    df = gd1.Search(time_range, table='events', output='pd')
+        time_range = (start, stop)
+    df = get_gdelt_data(time_range)
     global session
     session = Session()
     session.add_data(df, "raw_result")
