@@ -292,7 +292,11 @@ export default {
         percentile: ''
       },
       loading: false,
-      showMenu: false
+      showMenu: false,
+      width: 450,
+      height: 450,
+      margin: 40,
+      svg: null
     }
   },
   methods: {
@@ -363,39 +367,31 @@ export default {
       .then(response => {
         console.log(response)
         this.loading = false;
+        var radius =  Math.min(this.width, this.height) / 2 - this.margin;
 
-        var width = 450
-        var height = 450
-        var margin = 40
-
-        // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-        var radius = Math.min(width, height) / 2 - margin
-
-        // append the svg object to the div called 'my_dataviz'
-        var svg = d3.select("#arc")
-          .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-          .append("g")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-        // Create dummy data
-        var data = {a: 9, b: 20, c:30, d:8, e:12, f:3, g:7, h:14}
+        if(this.svg == null) {
+          this.svg = d3.select("#arc")
+            .append("svg")
+              .attr("width", this.width)
+              .attr("height", this.height)
+            .append("g")
+              .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
+        }
 
         // set the color scale
         var color = d3.scaleOrdinal()
-          .domain(["a", "b", "c", "d", "e", "f", "g", "h"])
+          .domain(response.data.map(x => x.event_type_cameo))
           .range(d3.schemeDark2);
 
         // Compute the position of each group on the pie:
         var pie = d3.pie()
           .sort(null) // Do not sort group by size
-          .value(function(d) {return d.value; })
-        var data_ready = pie(d3.entries(data))
+          .value(function(d) {return d.count; })
+        var data_ready = pie(response.data)
 
         // The arc generator
         var arc = d3.arc()
-          .innerRadius(radius * 0.5)         // This is the size of the donut hole
+          .innerRadius(radius * 0.0)         // This is the size of the donut hole
           .outerRadius(radius * 0.8)
 
         // Another arc that won't be drawn. Just for labels positioning
@@ -404,19 +400,19 @@ export default {
           .outerRadius(radius * 0.9)
 
         // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-        svg
+        this.svg
           .selectAll('allSlices')
           .data(data_ready)
           .enter()
           .append('path')
           .attr('d', arc)
-          .attr('fill', function(d){ return(color(d.data.key)) })
+          .attr('fill', function(d){ return(color(d.data.event_type_cameo)) })
           .attr("stroke", "white")
           .style("stroke-width", "2px")
           .style("opacity", 0.7)
 
         // Add the polylines between chart and labels:
-        svg
+        this.svg
           .selectAll('allPolylines')
           .data(data_ready)
           .enter()
@@ -434,12 +430,12 @@ export default {
             })
 
         // Add the polylines between chart and labels:
-        svg
+        this.svg
           .selectAll('allLabels')
           .data(data_ready)
           .enter()
           .append('text')
-            .text( function(d) { console.log(d.data.key) ; return d.data.key } )
+            .text( function(d) { console.log(d.data.event_type_cameo) ; return d.data.event_type_cameo } )
             .attr('transform', function(d) {
                 var pos = outerArc.centroid(d);
                 var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2

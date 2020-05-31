@@ -105,7 +105,7 @@ def add_analysis():
     print(params)
     result_name, result = analysis_manager.add_analysis(session, df_name, analysis_name, params)
     if isinstance(result, pd.DataFrame):
-        return result.to_json()
+        return result.to_json(orient="records")
     else:
         return jsonify(result)
 
