@@ -99,8 +99,12 @@
     <b-modal ref="bubbleMapModal"
          id="bubble-map-modal"
          title="bubble-map-tittle"
-         hide-footer>
-        <div class="bubble-map fill-height" />
+         class="col-sm-10"
+         hide-footer>          
+         <bubble-map
+            :map-data="bubbleMapData"
+            style="height: 90vh;"
+          />
     </b-modal>
 
   </div>
@@ -109,20 +113,15 @@
 <script>
 import axios from 'axios';
 import Datepicker from 'vuejs-datepicker';
+import BubbleMap from './bubble-maps/BubbleMap'
 
-import 'amcharts3'
-import 'amcharts3/amcharts/plugins/responsive/responsive.js'
-import 'amcharts3/amcharts/serial.js'
-import 'amcharts3/amcharts/themes/light'
-
-import 'ammap3'
-import 'ammap3/ammap/maps/js/worldLow'
 // import * as d3 from 'd3'
 
 export default {
   name: 'Map',
   components: {
     Datepicker,
+    BubbleMap,
   },
   // props: {
   //   data: Object
@@ -141,79 +140,24 @@ export default {
         actor1: '',
         actor2: '',
       },
-      bubbleMapData: null,
+      bubbleMapData: "",
       data: null
     }
   },
   methods: {
-    drawMap () {
-      /* global AmCharts */
-      //const minBulletSize = 3
-      //const maxBulletSize = 70
-      //let min = Infinity
-      //let max = -Infinity
-      AmCharts.theme = AmCharts.themes.light
 
-      // build map
-      const map = new AmCharts.AmMap()
-
-      map.projection = 'winkel3'
-      map.addTitle('Population of the World in 2011', 14, 1, 1, false)
-      map.addTitle('source: Gapminder', 11, 1, 1, 1, false)
-      map.areasSettings = {
-        unlistedAreasColor: '#eee',
-        unlistedAreasAlpha: 1,
-        outlineColor: '#fff',
-        outlineThickness: 2,
-      }
-      map.imagesSettings = {
-        balloonText: '<span style="font-size:14px"><b>[[title]]</b>: [[value]]</span>',
-        alpha: 0.75,
-      }
-
-      const dataProvider = {
-        mapVar: AmCharts.maps.worldLow,
-        images: [],
-      }
-
-      // create circle for each country
-      // it's better to use circle square to show difference between values, not a radius
-      //const maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI
-      //const minSquare = minBulletSize * minBulletSize * 2 * Math.PI
-
-      console.log(this.bubbleMapData);
-      // create circle for each country
-      this.bubbleMapData.forEach((dataItem) => {
-      console.log(dataItem);
-        //const value = dataItem.value
-        // calculate size of a bubble
-        //let square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare
-        //if (square < minSquare) {
-        //  square = minSquare
-        //}
-        //const size = Math.sqrt(square / (Math.PI * 2))
-        //const id = dataItem.code
-        dataProvider.images.push({
-          type: 'circle',
-          width: 1,
-          height: 1,
-          color: '#FFFFFF',
-          longitude: dataItem[1],
-          latitude: dataItem[0],
-          title: "",
-          value: 0,
-        })
-      })
-
-      map.dataProvider = dataProvider
-      map.write(this.$el)
-    },
     getMap1(payload) {
+      this.$refs.bubbleMapModal.show();
+      //console.log(this.$refs.bubbleMapModal);
+      //console.log(this.$refs);
+      //console.log(this);
+      //this.$refs.bubbleMapModal.$children[0].$children[0].drawMap(null);
       axios.post(`http://localhost:5000/actors-action-geo`, payload)
       .then(response => {
-        this.bubbleMapData = response.data
-        this.$refs.bubbleMapModal.show();
-        this.drawMap();
+        //this.bubbleMapData = response.data;
+        this.$refs.bubbleMapModal.$children[0].$children[0].drawMap(response.data);
+        console.log(response.data);
+        //console.log(this.$refs.bubbleMapModal);
       })
       .catch(e => {
         console.log(e);

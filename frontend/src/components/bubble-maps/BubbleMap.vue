@@ -1,5 +1,5 @@
 <template>
-  <div class="bubble-map fill-height" />
+  <div class="bubble-map fill-height" id="mapp"/>
 </template>
 
 <script>
@@ -14,27 +14,16 @@ import 'ammap3/ammap/maps/js/worldLow'
 export default {
   name: 'bubble-map',
 
-  props: ['mapData'],
+  props: ['map-data'],
 
   methods: {
-    drawMap () {
+    drawMap (bubbleMapData) {
       /* global AmCharts */
-      const minBulletSize = 3
-      const maxBulletSize = 70
-      let min = Infinity
-      let max = -Infinity
+      //const minBulletSize = 3
+      //const maxBulletSize = 70
+      //let min = Infinity
+      //let max = -Infinity
       AmCharts.theme = AmCharts.themes.light
-
-      // get min and max values
-      this.mapData.data.forEach((dataItem) => {
-        const value = dataItem.value
-        if (value < min) {
-          min = value
-        }
-        if (value > max) {
-          max = value
-        }
-      })
 
       // build map
       const map = new AmCharts.AmMap()
@@ -60,38 +49,51 @@ export default {
 
       // create circle for each country
       // it's better to use circle square to show difference between values, not a radius
-      const maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI
-      const minSquare = minBulletSize * minBulletSize * 2 * Math.PI
+      //const maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI
+      //const minSquare = minBulletSize * minBulletSize * 2 * Math.PI
 
+      console.log("data",bubbleMapData);
       // create circle for each country
-      this.mapData.data.forEach((dataItem) => {
-        const value = dataItem.value
+      bubbleMapData.forEach((dataItem) => {
+        console.log(dataItem);
+        //const value = dataItem.value
         // calculate size of a bubble
-        let square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare
-        if (square < minSquare) {
-          square = minSquare
-        }
-        const size = Math.sqrt(square / (Math.PI * 2))
-        const id = dataItem.code
+        //let square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare
+        //if (square < minSquare) {
+        //  square = minSquare
+        //}
+        //const size = Math.sqrt(square / (Math.PI * 2))
+        //const id = dataItem.code
         dataProvider.images.push({
           type: 'circle',
-          width: size,
-          height: size,
-          color: dataItem.color,
-          longitude: this.mapData.latlong[id].longitude,
-          latitude: this.mapData.latlong[id].latitude,
-          title: dataItem.name,
-          value: value,
+          width: 10,
+          height: 10,
+          color: '#FFAA00',
+          longitude: dataItem[1],
+          latitude: dataItem[0],
+          title: "point",
+          value: 1,
         })
       })
+      console.log(dataProvider.images);
 
       map.dataProvider = dataProvider
       map.write(this.$el)
+      console.log("koniec");
+      console.log(this);
+      console.log(map);
+      console.log("koniec");
     },
   },
-
   mounted () {
-    this.drawMap()
+    //console.log("dziala");
+    //console.log(this);
+    //var i;
+    //while(this.$parent.$parent.$parent.bubbleMapData == null){
+    //  i=i+1;
+    //}
+    //this.drawMap(this.bubbleMapData);
+    //console.log(this);
   },
 }
 </script>
