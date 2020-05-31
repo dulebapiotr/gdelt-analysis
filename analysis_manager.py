@@ -1,3 +1,5 @@
+import traceback
+
 from Session import Session
 from typing import Dict, Tuple, Sequence
 import pandas as pd
@@ -15,13 +17,14 @@ quantitative_analysis_dict = {
 }
 
 
-def add_analysis(session: Session, data_name: str, analysis: str, params: Dict[str, any]) -> Tuple[str, pd.DataFrame]:
+def add_analysis(session: Session, data_name: str, analysis: str, params: Dict[str, any]):
     data_dataframe = session.get_data(data_name)
     analysis_func = quantitative_analysis_dict[analysis]
     try:
-        result_dataframe = analysis_func(data_dataframe, params)
-        result_name = session.add_data(result_dataframe, data_name + analysis)
-        return result_name, result_dataframe
+        result = analysis_func(data_dataframe, params)
+        result_name = session.add_data(result, data_name + analysis)
+        return result_name, result
     except ValueError:
+        traceback.print_exc()
         # todo: change to error 400
-        return "invalid argument", data_dataframe
+        return "invalid argument", {}

@@ -18,7 +18,7 @@ def count_events(data: pd.DataFrame, args: Dict):
     # tutaj zawężam, bo kategorie są jeszcze bardziej uszczegółowione, interesują mnie tylko pierwsze 2 cyfry kodu CAMEO
     filtered = events.apply(lambda x: int(x['EventCode'][:2]), axis=1)
     checked = filtered.apply(lambda x: 1 if x == event_type else 0)
-    return checked.sum()
+    return int(checked.sum())
 
 
 # punkt 5 analiz ilościowych - dla danej kolumny(jej nazwy) pokazuje jej wartości w czasie (uporządkowanym),
@@ -31,6 +31,7 @@ def value_in_time(data: pd.DataFrame, args: Dict):
     return result
 
 
+# tested!
 def polynomial_fit(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     column_name = args["column_name"]
@@ -38,10 +39,14 @@ def polynomial_fit(data: pd.DataFrame, args: Dict):
     if column_name not in data.columns:
         raise Exception
     vector = data[column_name]
-    polynomial = np.polynomial.polynomial.Polynomial.fit(y=vector, x=range(0, len(vector)), deg=degree)
-    return polynomial[0].convert().coef
+    polyfit = np.polynomial.polynomial.Polynomial.fit(
+        y=vector,
+        x=range(0, len(vector)),
+        deg=degree)
 
+    return polyfit.coef.tolist()
 
+# tested!
 def get_mean_std_var(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     column_name = args["column_name"]
@@ -52,7 +57,7 @@ def get_mean_std_var(data: pd.DataFrame, args: Dict):
             "std_dev": vector.std(),
             "variance": vector.var()}
 
-
+# tested!
 def get_median(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     column_name = args["column_name"]
@@ -60,18 +65,18 @@ def get_median(data: pd.DataFrame, args: Dict):
         raise Exception
     return np.median(data[column_name])
 
-
+# tested!
 def get_range_ptp(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     column_name = args["column_name"]
     if column_name not in data.columns:
         raise Exception
     vector = data[column_name]
-    return {"min": np.amin(vector),
-            "max": np.amax(vector),
-            "ptp": np.ptp(vector.var)}
+    return {"min": int(np.amin(vector)),
+            "max": int(np.amax(vector)),
+            "ptp": int(np.ptp(vector))}
 
-
+# tested!
 def get_percentile(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     column_name = args["column_name"]

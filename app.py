@@ -33,7 +33,7 @@ def get_gdelt_data(start: str, stop: str) -> pd.DataFrame:
         else:
             df = gd1.Search(str(i), table='events', output='pd')
             db.insert_dataframe(df)
-            pd.concat([res_df, df])
+            res_df = pd.concat([res_df, df])
 
     return res_df
 
@@ -73,11 +73,11 @@ def new_session():
     if start == stop:
         df = get_gdelt_data(start, start)
     else:
-        df = get_gdelt_data(start, start)
+        df = get_gdelt_data(start, stop)
     global session
     session = Session()
     session.add_data(df, "raw_result")
-    return df.to_json()[:100]  # to stanowczo za duże żeby przesłać jsonem
+    return df[:100].to_json()  # to stanowczo za duże żeby przesłać jsonem
 
 
 # pobranie danych z sesji (void) - chyba jednak nie jkest void xD
@@ -103,8 +103,8 @@ def add_analysis():
     params = data.get('params')
     print(type(params))
     print(params)
-    result_name, result_dataframe = analysis_manager.add_analysis(session, df_name, analysis_name, params)
-    return jsonify([result_name, result_dataframe])
+    result_name, result = analysis_manager.add_analysis(session, df_name, analysis_name, params)
+    return jsonify([result_name, result])
 
 
 if __name__ == '__main__':
