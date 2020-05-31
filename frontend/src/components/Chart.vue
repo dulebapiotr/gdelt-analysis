@@ -14,7 +14,8 @@
       style="margin: auto; margin-top: 300px; background-color: red"
       :itemSize="150"
       :radius="240"
-      :angle-restriction="360">
+      :angle-restriction="360"
+      v-if="showMenu">
         <radial-menu-item
           style="background-color: white"
           >
@@ -291,7 +292,8 @@ export default {
         column_name: '',
         percentile: ''
       },
-      loading: false
+      loading: false,
+      showMenu: false
     }
   },
   methods: {
@@ -299,6 +301,7 @@ export default {
       axios.post(`http://localhost:5000/new_session`, payload)
       .then(response => {
         this.loading = false;
+        this.showMenu = true;
         console.log(response.data);
         this.data = response.data;
       })

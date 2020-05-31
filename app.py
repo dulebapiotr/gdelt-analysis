@@ -77,7 +77,7 @@ def new_session():
     global session
     session = Session()
     session.add_data(df, "raw_result")
-    return df[:100].to_json()  # to stanowczo za duże żeby przesłać jsonem
+    return "succesfully got data"  # to stanowczo za duże żeby przesłać jsonem
 
 
 # pobranie danych z sesji (void) - chyba jednak nie jkest void xD
