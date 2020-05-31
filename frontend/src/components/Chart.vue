@@ -27,6 +27,11 @@
           >
           <span>event types ratio</span>
         </radial-menu-item>
+        <radial-menu-item
+          style="background-color: white"
+          >
+          <span v-b-modal.value-in-time>value in time</span>
+        </radial-menu-item>
       </radial-menu>
 
 
@@ -40,6 +45,25 @@
                       label-for="form-eventType-input">
             <input id="form-eventType-input"
                             v-model="countEventsForm.event_type"
+                            required/>
+          </b-form-group>
+
+          <b-button-group>
+            <b-button type="submit" variant="primary">Submit</b-button>
+          </b-button-group>
+        </b-form>
+      </b-modal>
+
+      <b-modal ref="valueInTimeModal"
+         id="value-in-time"
+         title="value in time"
+         hide-footer>
+        <b-form @submit="onSubmitValueInTime">
+          <b-form-group id="form-calumnName-group"
+                      label="Column Name:"
+                      label-for="form-columnName-input">
+            <input id="form-columnName-input"
+                            v-model="valueInTimeForm.column_name"
                             required/>
           </b-form-group>
 
@@ -108,6 +132,9 @@ export default {
       showModalCountEvents: false,
       countEventsForm: {
         event_type: ''
+      },
+      valueInTimeForm: {
+        column_name: ''
       }
     }
   },
@@ -126,6 +153,7 @@ export default {
         this.searchDataframeForm.start = '';
         this.searchDataframeForm.stop = '';
         this.countEventsForm.event_type = '';
+        this.valueInTimeForm.column_name = '';
       },
     onSubmit(evt) {
       evt.preventDefault();
@@ -160,6 +188,24 @@ export default {
         df_name: "raw_result",
         analysis_name: "event_types_ratio",
         params: {}
+      };
+      axios.post(`http://localhost:5000/add_analysis`, payload)
+      .then(response => {
+        console.log(response.data);
+        this.data = response.data;
+      })
+      .catch(e => {
+        console.log(e);
+      })
+    },
+    onSubmitValueInTime(evt) {
+      evt.preventDefault();
+      const payload = {
+        df_name: "raw_result",
+        analysis_name: "value_in_time",
+        params: {
+          value: this.valueInTimeForm.column_name
+        }
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
