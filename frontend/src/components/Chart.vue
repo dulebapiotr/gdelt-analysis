@@ -32,6 +32,11 @@
           >
           <span v-b-modal.value-in-time>value in time</span>
         </radial-menu-item>
+        <radial-menu-item
+          style="background-color: white"
+          >
+          <span v-b-modal.polynomial-fit>polynomial fit</span>
+        </radial-menu-item>
       </radial-menu>
 
 
@@ -64,6 +69,32 @@
                       label-for="form-columnName-input">
             <input id="form-columnName-input"
                             v-model="valueInTimeForm.column_name"
+                            required/>
+          </b-form-group>
+
+          <b-button-group>
+            <b-button type="submit" variant="primary">Submit</b-button>
+          </b-button-group>
+        </b-form>
+      </b-modal>
+
+      <b-modal ref="polynomialFitModal"
+         id="polynomial-fit"
+         title="polynomial fit"
+         hide-footer>
+        <b-form @submit="onSubmitPolynomialFit">
+          <b-form-group id="form-calumnName-group"
+                      label="Column Name:"
+                      label-for="form-columnName-input">
+            <input id="form-columnName-input"
+                            v-model="polynomialFitForm.column_name"
+                            required/>
+          </b-form-group>
+          <b-form-group id="form-degree-group"
+                      label="Degree:"
+                      label-for="form-degree-input">
+            <input id="form-degree-input"
+                            v-model="polynomialFitForm.degree"
                             required/>
           </b-form-group>
 
@@ -135,6 +166,10 @@ export default {
       },
       valueInTimeForm: {
         column_name: ''
+      },
+      polynomialFitForm: {
+        column_name: '',
+        degree: ''
       }
     }
   },
@@ -154,6 +189,8 @@ export default {
         this.searchDataframeForm.stop = '';
         this.countEventsForm.event_type = '';
         this.valueInTimeForm.column_name = '';
+        this.polynomialFitForm.calumnName = '';
+        this.polynomialFitForm.degree = '';
       },
     onSubmit(evt) {
       evt.preventDefault();
@@ -205,6 +242,25 @@ export default {
         analysis_name: "value_in_time",
         params: {
           value: this.valueInTimeForm.column_name
+        }
+      };
+      axios.post(`http://localhost:5000/add_analysis`, payload)
+      .then(response => {
+        console.log(response.data);
+        this.data = response.data;
+      })
+      .catch(e => {
+        console.log(e);
+      })
+    },
+    onSubmitPolynomialFit(evt) {
+      evt.preventDefault();
+      const payload = {
+        df_name: "raw_result",
+        analysis_name: "polynomial_fit",
+        params: {
+          column_name: this.polynomialFitForm.column_name,
+          degree: this.polynomialFitForm.degree
         }
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
