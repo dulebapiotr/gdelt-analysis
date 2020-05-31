@@ -42,6 +42,21 @@
           >
           <span v-b-modal.mean-std-var>mean std var</span>
         </radial-menu-item>
+        <radial-menu-item
+          style="background-color: white"
+          >
+          <span v-b-modal.median>median</span>
+        </radial-menu-item>
+        <radial-menu-item
+          style="background-color: white"
+          >
+          <span v-b-modal.range-ptp>range ptp</span>
+        </radial-menu-item>
+        <radial-menu-item
+          style="background-color: white"
+          >
+          <span v-b-modal.percentile>percentile</span>
+        </radial-menu-item>
       </radial-menu>
 
 
@@ -128,6 +143,70 @@
         </b-form>
       </b-modal>
 
+      <b-modal ref="medianModal"
+         id="median"
+         title="Median"
+         hide-footer>
+        <b-form @submit="onSubmitMedian">
+          <b-form-group id="form-calumnName-group"
+                      label="Column Name:"
+                      label-for="form-columnName-input">
+            <input id="form-columnName-input"
+                            v-model="medianForm.column_name"
+                            required/>
+          </b-form-group>
+
+          <b-button-group>
+            <b-button type="submit" variant="primary">Submit</b-button>
+          </b-button-group>
+        </b-form>
+      </b-modal>
+
+      <b-modal ref="rangePtpModal"
+         id="range-ptp"
+         title="Range ptp"
+         hide-footer>
+        <b-form @submit="onSubmitMedian">
+          <b-form-group id="form-calumnName-group"
+                      label="Column Name:"
+                      label-for="form-columnName-input">
+            <input id="form-columnName-input"
+                            v-model="rangePtpForm.column_name"
+                            required/>
+          </b-form-group>
+
+          <b-button-group>
+            <b-button type="submit" variant="primary">Submit</b-button>
+          </b-button-group>
+        </b-form>
+      </b-modal>
+
+      <b-modal ref="percentileModal"
+         id="percentile"
+         title="Percentile"
+         hide-footer>
+        <b-form @submit="onSubmitPercentile">
+          <b-form-group id="form-calumnName-group"
+                      label="Column Name:"
+                      label-for="form-columnName-input">
+            <input id="form-columnName-input"
+                            v-model="percentileForm.column_name"
+                            required/>
+          </b-form-group>
+          <b-form-group id="form-percentile-group"
+                      label="Percentile:"
+                      label-for="form-percentile-input">
+            <input id="form-percentile-input"
+                            v-model="percentileForm.percentile"
+                            required/>
+          </b-form-group>
+
+          <b-button-group>
+            <b-button type="submit" variant="primary">Submit</b-button>
+          </b-button-group>
+        </b-form>
+      </b-modal>
+
     <b-modal ref="searchDataframeModal"
          id="search-modal"
          title="Search a Dataframe"
@@ -197,6 +276,16 @@ export default {
       },
       meanStdVarForm: {
         column_name: ''
+      },
+      medianForm: {
+        column_name: ''
+      },
+      rangePtpForm: {
+        column_name: ''
+      },
+      percentileForm: {
+        column_name: '',
+        percentile: ''
       }
     }
   },
@@ -219,6 +308,10 @@ export default {
         this.polynomialFitForm.calumnName = '';
         this.polynomialFitForm.degree = '';
         this.meanStdVarForm.column_name = '';
+        this.medianForm.column_name = '';
+        this.rangePtpForm.column_name = '';
+        this.percentileForm.column_name = '';
+        this.percentileForm.percentile = '';
       },
     onSubmit(evt) {
       evt.preventDefault();
@@ -307,6 +400,61 @@ export default {
         analysis_name: "mean_std_var",
         params: {
           column_name: this.meanStdVarForm.column_name,
+        }
+      };
+      axios.post(`http://localhost:5000/add_analysis`, payload)
+      .then(response => {
+        console.log(response.data);
+        this.data = response.data;
+      })
+      .catch(e => {
+        console.log(e);
+      })
+    },
+    onSubmitMedian(evt) {
+      evt.preventDefault();
+      const payload = {
+        df_name: "raw_result",
+        analysis_name: "median",
+        params: {
+          column_name: this.medianForm.column_name,
+        }
+      };
+      axios.post(`http://localhost:5000/add_analysis`, payload)
+      .then(response => {
+        console.log(response.data);
+        this.data = response.data;
+      })
+      .catch(e => {
+        console.log(e);
+      })
+    },
+    onSubmitRangePtp(evt) {
+      evt.preventDefault();
+      const payload = {
+        df_name: "raw_result",
+        analysis_name: "range_ptp",
+        params: {
+          column_name: this.range_ptp.column_name,
+        }
+      };
+      axios.post(`http://localhost:5000/add_analysis`, payload)
+      .then(response => {
+        console.log(response.data);
+        this.data = response.data;
+      })
+      .catch(e => {
+        console.log(e);
+      })
+    },
+    onSubmitPercentile(evt) {
+      evt.preventDefault();
+      const payload = {
+        df_name: "raw_result",
+        analysis_name: "percentile",
+        params: {
+          column_name: this.percentileForm.column_name,
+          percentile: this.percentileForm.percentile
         }
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
