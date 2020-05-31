@@ -1,5 +1,5 @@
 <template>
-  <div class="bubble-map fill-height" />
+  <div class="bubble-map fill-height" id="mapp"/>
 </template>
 
 <script>
@@ -14,7 +14,7 @@ import 'ammap3/ammap/maps/js/worldLow'
 export default {
   name: 'bubble-map',
 
-  props: ['mapData'],
+  props: ['map-data'],
 
   methods: {
     drawMap (bubbleMapData) {
@@ -52,7 +52,7 @@ export default {
       //const maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI
       //const minSquare = minBulletSize * minBulletSize * 2 * Math.PI
 
-      console.log(bubbleMapData);
+      console.log("data",bubbleMapData);
       // create circle for each country
       bubbleMapData.forEach((dataItem) => {
         console.log(dataItem);
@@ -66,13 +66,13 @@ export default {
         //const id = dataItem.code
         dataProvider.images.push({
           type: 'circle',
-          width: 1,
-          height: 1,
-          color: '#FFFFFF',
+          width: 10,
+          height: 10,
+          color: '#FFAA00',
           longitude: dataItem[1],
           latitude: dataItem[0],
-          title: "",
-          value: 0,
+          title: "point",
+          value: 1,
         })
       })
       console.log(dataProvider.images);
@@ -84,16 +84,16 @@ export default {
       console.log(map);
       console.log("koniec");
     },
-  mounted () {
-    console.log("dziala");
-
-    while(this.$parent.bubbleMapDatga == null){
-      console.log("wait");
-    }
-    this.drawMap(this.$parent.bubbleMapData);
-    console.log(this);
   },
-
+  mounted () {
+    //console.log("dziala");
+    //console.log(this);
+    //var i;
+    //while(this.$parent.$parent.$parent.bubbleMapData == null){
+    //  i=i+1;
+    //}
+    //this.drawMap(this.bubbleMapData);
+    //console.log(this);
   },
 }
 </script>

@@ -99,10 +99,11 @@
     <b-modal ref="bubbleMapModal"
          id="bubble-map-modal"
          title="bubble-map-tittle"
+         class="col-sm-10"
          hide-footer>          
          <bubble-map
             :map-data="bubbleMapData"
-            style="height: 65vh;"
+            style="height: 90vh;"
           />
     </b-modal>
 
@@ -139,7 +140,7 @@ export default {
         actor1: '',
         actor2: '',
       },
-      bubbleMapData: null,
+      bubbleMapData: "",
       data: null
     }
   },
@@ -147,14 +148,16 @@ export default {
 
     getMap1(payload) {
       this.$refs.bubbleMapModal.show();
-      console.log(this.$refs.bubbleMapModal);
-      console.log(this.$refs);
-      console.log(this);
+      //console.log(this.$refs.bubbleMapModal);
+      //console.log(this.$refs);
+      //console.log(this);
+      //this.$refs.bubbleMapModal.$children[0].$children[0].drawMap(null);
       axios.post(`http://localhost:5000/actors-action-geo`, payload)
       .then(response => {
-        this.bubbleMapData = response.data;
-        BubbleMap.methods.drawMap(response.data);
-        console.log(this.$refs.bubbleMapModal);
+        //this.bubbleMapData = response.data;
+        this.$refs.bubbleMapModal.$children[0].$children[0].drawMap(response.data);
+        console.log(response.data);
+        //console.log(this.$refs.bubbleMapModal);
       })
       .catch(e => {
         console.log(e);
