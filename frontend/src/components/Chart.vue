@@ -140,9 +140,13 @@ export default {
       evt.preventDefault();
       this.$refs.countEventsModal.hide();
       const payload = {
-        event_type: this.countEventsForm.eventType
+        params: {
+          event_type: this.countEventsForm.eventType
+        },
+        df_name: "raw_result",
+        analysis_name: "count_event"
       };
-      axios.post(`http://localhost:5000/new_session`, payload)
+      axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
         console.log(response.data);
         this.data = response.data;
@@ -153,9 +157,11 @@ export default {
     },
     onSubmitEventTypesRatio() {
       const payload = {
-        lol: "lol"
+        df_name: "raw_result",
+        analysis_name: "event_types_ratio",
+        params: {}
       };
-      axios.post(`http://localhost:5000/new_session`, payload)
+      axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
         console.log(response.data);
         this.data = response.data;

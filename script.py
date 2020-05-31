@@ -93,7 +93,7 @@ def event_types_ratio(data: pd.DataFrame, _):
     event_count = data.shape[0]  # no bo tyle jest wszystkich zdarzeń co rekordów
     dictionary = {"event_type_cameo": [], "count": [], "ratio": []}
     for x in range(1, 21):
-        count = count_events(data, x)
+        count = count_events(data, {"event_type": x})
         dictionary["event_type_cameo"].append(x)
         dictionary["count"].append(count)
         dictionary["ratio"].append(count / event_count)

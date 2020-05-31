@@ -22,8 +22,8 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 def get_gdelt_data(start: str, stop: str) -> pd.DataFrame:
     res_df = pd.DataFrame()
-    start_time = strptime(start, "%a, %d %b %Y %H:%M:%S %Z")
-    stop_time = strptime(stop, "%a, %d %b %Y %H:%M:%S %Z")
+    start_time = strptime(start, "%Y-%m-%d")
+    stop_time = strptime(stop, "%Y-%m-%d")
     date_start = int(strftime('%Y%m%d', start_time))
     date_stop = int(strftime('%Y%m%d', stop_time))
     for i in range(date_start, date_stop + 1):
@@ -68,8 +68,8 @@ def actors_action_geo():
 @app.route('/new_session', methods=['POST'])
 def new_session():
     data = request.get_json()
-    start = data.get('start')
-    stop = data.get('stop')
+    start = data.get('start')[0:10]
+    stop = data.get('stop')[0:10]
     if start == stop:
         df = get_gdelt_data(start, start)
     else:
