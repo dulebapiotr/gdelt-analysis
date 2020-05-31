@@ -11,7 +11,8 @@ import numpy as np
 # zwraca liczbe rodzajów wydarzeń w danym datasecie, biorę pod uwagę 2 pierwsze cyfry kodu CAMEO
 def count_events(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
-    event_type = args["event_type"]
+    print(args)
+    event_type = int(args["event_type"])
     if not 1 <= event_type <= 20:
         return 0
     events = data[['EventCode']]

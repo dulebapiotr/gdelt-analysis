@@ -104,7 +104,10 @@ def add_analysis():
     print(type(params))
     print(params)
     result_name, result = analysis_manager.add_analysis(session, df_name, analysis_name, params)
-    return jsonify([result_name, result])
+    if isinstance(result, pd.DataFrame):
+        return result.to_json()
+    else:
+        return jsonify(result)
 
 
 if __name__ == '__main__':

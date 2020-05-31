@@ -125,7 +125,7 @@ export default {
     initForm() {
         this.searchDataframeForm.start = '';
         this.searchDataframeForm.stop = '';
-        this.countEventsForm.eventType = '';
+        this.countEventsForm.event_type = '';
       },
     onSubmit(evt) {
       evt.preventDefault();
@@ -141,10 +141,10 @@ export default {
       this.$refs.countEventsModal.hide();
       const payload = {
         params: {
-          event_type: this.countEventsForm.eventType
+          event_type: this.countEventsForm.event_type
         },
         df_name: "raw_result",
-        analysis_name: "count_event"
+        analysis_name: "count_events"
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
