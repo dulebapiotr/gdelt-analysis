@@ -37,6 +37,11 @@
           >
           <span v-b-modal.polynomial-fit>polynomial fit</span>
         </radial-menu-item>
+        <radial-menu-item
+          style="background-color: white"
+          >
+          <span v-b-modal.mean-std-var>mean std var</span>
+        </radial-menu-item>
       </radial-menu>
 
 
@@ -95,6 +100,25 @@
                       label-for="form-degree-input">
             <input id="form-degree-input"
                             v-model="polynomialFitForm.degree"
+                            required/>
+          </b-form-group>
+
+          <b-button-group>
+            <b-button type="submit" variant="primary">Submit</b-button>
+          </b-button-group>
+        </b-form>
+      </b-modal>
+
+      <b-modal ref="meanStdVarModal"
+         id="mean-std-var"
+         title="Mean std var"
+         hide-footer>
+        <b-form @submit="onSubmitMeanStdVar">
+          <b-form-group id="form-calumnName-group"
+                      label="Column Name:"
+                      label-for="form-columnName-input">
+            <input id="form-columnName-input"
+                            v-model="meanStdVarForm.column_name"
                             required/>
           </b-form-group>
 
@@ -170,6 +194,9 @@ export default {
       polynomialFitForm: {
         column_name: '',
         degree: ''
+      },
+      meanStdVarForm: {
+        column_name: ''
       }
     }
   },
@@ -191,6 +218,7 @@ export default {
         this.valueInTimeForm.column_name = '';
         this.polynomialFitForm.calumnName = '';
         this.polynomialFitForm.degree = '';
+        this.meanStdVarForm.column_name = '';
       },
     onSubmit(evt) {
       evt.preventDefault();
@@ -261,6 +289,24 @@ export default {
         params: {
           column_name: this.polynomialFitForm.column_name,
           degree: this.polynomialFitForm.degree
+        }
+      };
+      axios.post(`http://localhost:5000/add_analysis`, payload)
+      .then(response => {
+        console.log(response.data);
+        this.data = response.data;
+      })
+      .catch(e => {
+        console.log(e);
+      })
+    },
+    onSubmitMeanStdVar(evt) {
+      evt.preventDefault();
+      const payload = {
+        df_name: "raw_result",
+        analysis_name: "mean_std_var",
+        params: {
+          column_name: this.meanStdVarForm.column_name,
         }
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
