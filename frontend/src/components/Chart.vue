@@ -6,12 +6,11 @@
         <hr><br><br>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.search-modal>Search</button>
         <br><br>
-      </div>
-    </div>
-
-    <svg>
-    </svg>
-    <radial-menu
+        <b-spinner v-if="loading" style="margin: auto; width: 5rem; height: 5rem;" label="Large Spinner"></b-spinner>
+        <br>
+        <svg>
+        </svg>
+        <radial-menu
       style="margin: auto; margin-top: 300px; background-color: red"
       :itemSize="150"
       :radius="240"
@@ -58,6 +57,11 @@
           <span v-b-modal.percentile>percentile</span>
         </radial-menu-item>
       </radial-menu>
+      </div>
+    </div>
+
+
+
 
 
       <b-modal ref="countEventsModal"
@@ -286,13 +290,15 @@ export default {
       percentileForm: {
         column_name: '',
         percentile: ''
-      }
+      },
+      loading: false
     }
   },
   methods: {
     postPost(payload) {
       axios.post(`http://localhost:5000/new_session`, payload)
       .then(response => {
+        this.loading = false;
         console.log(response.data);
         this.data = response.data;
       })
@@ -315,6 +321,7 @@ export default {
       },
     onSubmit(evt) {
       evt.preventDefault();
+      this.loading = true;
       this.$refs.searchDataframeModal.hide();
       const payload = {
         start: this.searchDataframeForm.start,
@@ -325,6 +332,7 @@ export default {
     onSubmitCountEvents(evt) {
       evt.preventDefault();
       this.$refs.countEventsModal.hide();
+      this.loading = true;
       const payload = {
         params: {
           event_type: this.countEventsForm.event_type
@@ -334,6 +342,7 @@ export default {
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
+        this.loading = false;
         console.log(response.data);
         this.data = response.data;
       })
@@ -342,6 +351,7 @@ export default {
       })
     },
     onSubmitEventTypesRatio() {
+      this.loading = true;
       const payload = {
         df_name: "raw_result",
         analysis_name: "event_types_ratio",
@@ -349,6 +359,7 @@ export default {
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
+        this.loading = false;
         console.log(response.data);
         this.data = response.data;
       })
@@ -358,6 +369,7 @@ export default {
     },
     onSubmitValueInTime(evt) {
       evt.preventDefault();
+      this.loading = true;
       const payload = {
         df_name: "raw_result",
         analysis_name: "value_in_time",
@@ -367,6 +379,7 @@ export default {
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
+        this.loading = false;
         console.log(response.data);
         this.data = response.data;
       })
@@ -376,6 +389,7 @@ export default {
     },
     onSubmitPolynomialFit(evt) {
       evt.preventDefault();
+      this.loading = true;
       const payload = {
         df_name: "raw_result",
         analysis_name: "polynomial_fit",
@@ -386,6 +400,7 @@ export default {
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
+        this.loading = false;
         console.log(response.data);
         this.data = response.data;
       })
@@ -395,6 +410,7 @@ export default {
     },
     onSubmitMeanStdVar(evt) {
       evt.preventDefault();
+      this.loading = true;
       const payload = {
         df_name: "raw_result",
         analysis_name: "mean_std_var",
@@ -404,6 +420,7 @@ export default {
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
+        this.loading = false;
         console.log(response.data);
         this.data = response.data;
       })
@@ -413,6 +430,7 @@ export default {
     },
     onSubmitMedian(evt) {
       evt.preventDefault();
+      this.loading = true;
       const payload = {
         df_name: "raw_result",
         analysis_name: "median",
@@ -422,6 +440,7 @@ export default {
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
+        this.loading = false;
         console.log(response.data);
         this.data = response.data;
       })
@@ -431,6 +450,7 @@ export default {
     },
     onSubmitRangePtp(evt) {
       evt.preventDefault();
+      this.loading = true;
       const payload = {
         df_name: "raw_result",
         analysis_name: "range_ptp",
@@ -440,6 +460,7 @@ export default {
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
+        this.loading = false;
         console.log(response.data);
         this.data = response.data;
       })
@@ -449,6 +470,7 @@ export default {
     },
     onSubmitPercentile(evt) {
       evt.preventDefault();
+      this.loading = true;
       const payload = {
         df_name: "raw_result",
         analysis_name: "percentile",
@@ -459,6 +481,7 @@ export default {
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
+        this.loading = false;
         console.log(response.data);
         this.data = response.data;
       })
