@@ -293,8 +293,8 @@ export default {
       },
       loading: false,
       showMenu: false,
-      width: 450,
-      height: 450,
+      width: 900,
+      height: 900,
       margin: 40,
       svg: null
     }
