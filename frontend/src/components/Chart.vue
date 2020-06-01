@@ -595,7 +595,8 @@ export default {
         }
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
-      .then(response => {
+      .then(response => {        
+        window.alert("Column: " + this.percentileForm.column_name + "\nPercentile: " + this.percentileForm.percentile + "\nResult: " + response.data);
         this.loading = false;
         console.log(response.data);
         this.data = response.data;
