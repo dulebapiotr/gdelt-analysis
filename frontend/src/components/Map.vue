@@ -5,7 +5,7 @@
         <h1>MAPS</h1>
         <hr><br><br>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.map-search-modal1>Events <br> between countries</button>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.map-search-modal2>Search</button>
+        
         <br><br>
       </div>
     </div>
