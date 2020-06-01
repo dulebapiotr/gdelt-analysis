@@ -293,7 +293,7 @@ export default {
       },
       loading: false,
       showMenu: false,
-      width: 900,
+      width: 1350,
       height: 900,
       margin: 40,
       svg: null
@@ -350,7 +350,7 @@ export default {
       .then(response => {
         this.loading = false;
         console.log(response.data);
-        this.data = response.data;
+        this.data = response.data ;
       })
       .catch(e => {
         console.log(e);
@@ -378,7 +378,7 @@ export default {
         
         }
 
-        var cameo_labels = ["Make public statement", "Appeal", "Express intent to cooperate", "Consult", "Enagage in diplomatic cooperation", "Engage in material cooperation", "Prove Aid", "Yield", "Investigate", "Demand", "Disapprove", "Rejecr", "Threaten", "Protest", "Exhibit force posture", "Reduce relations", "Coerce", "Assault", "Fight", "Use mass violence"];
+        var cameo_labels = ["Make public statement", "Appeal", "Express intent to cooperate", "Consult", "Enagage in diplomatic cooperation", "Engage in material cooperation", "Prove Aid", "Yield", "Investigate", "Demand", "Disapprove", "Reject", "Threaten", "Protest", "Exhibit force posture", "Reduce relations", "Coerce", "Assault", "Fight", "Use mass violence"];
         
         // set the color scale
         var color = d3.scaleOrdinal()
@@ -392,7 +392,7 @@ export default {
         var data_ready = pie(response.data)
         data_ready.forEach(cameoFunction);
         function cameoFunction(value, index){
-          data_ready[index].cameo_label = cameo_labels[index]
+          data_ready[index].cameo_label = cameo_labels[index] + " " + (data_ready[index].data.ratio*100).toString().substring(0,5)  + '%'
         }
         console.log(data_ready)
         
@@ -433,7 +433,7 @@ export default {
               var posB = outerArc.centroid(d) // line break: we use the other arc generator that has been built only for that
               var posC = outerArc.centroid(d); // Label position = almost the same as posB
               var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
-              posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
+              posC[0] = radius * 0.8 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
               return [posA, posB, posC]
             })
 
