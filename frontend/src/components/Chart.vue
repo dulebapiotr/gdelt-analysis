@@ -375,11 +375,11 @@ export default {
               .attr("height", this.height)
             .append("g")
               .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")")
-        
+
         }
 
         var cameo_labels = ["Make public statement", "Appeal", "Express intent to cooperate", "Consult", "Enagage in diplomatic cooperation", "Engage in material cooperation", "Prove Aid", "Yield", "Investigate", "Demand", "Disapprove", "Reject", "Threaten", "Protest", "Exhibit force posture", "Reduce relations", "Coerce", "Assault", "Fight", "Use mass violence"];
-        
+
         // set the color scale
         var color = d3.scaleOrdinal()
           .domain(response.data.map(x => x.event_type_cameo))
@@ -395,7 +395,7 @@ export default {
           data_ready[index].cameo_label = cameo_labels[index] + " " + (data_ready[index].data.ratio*100).toString().substring(0,5)  + '%'
         }
         console.log(data_ready)
-        
+
 
         // The arc generator
         var arc = d3.arc()
@@ -433,7 +433,7 @@ export default {
               var posB = outerArc.centroid(d) // line break: we use the other arc generator that has been built only for that
               var posC = outerArc.centroid(d); // Label position = almost the same as posB
               var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
-              posC[0] = radius * 0.8 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
+              posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
               return [posA, posB, posC]
             })
 
