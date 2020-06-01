@@ -15,11 +15,14 @@
       :radius="240"
       :angle-restriction="360"
       v-if="showMenu">
+
         <radial-menu-item
           style="background-color: white"
+          
           >
           <span v-b-modal.count-events>count events</span>
         </radial-menu-item>
+
         <radial-menu-item
           style="background-color: white"
           @click="() => onSubmitEventTypesRatio()"
@@ -352,6 +355,15 @@ export default {
         this.loading = false;
         console.log(response.data);
         this.data = response.data ;
+        
+        var cameo = this.countEventsForm.event_type
+        var cameo_labels = ["Make public statement", "Appeal", "Express intent to cooperate", "Consult", "Enagage in diplomatic cooperation", "Engage in material cooperation", "Prove Aid", "Yield", "Investigate", "Demand", "Disapprove", "Reject", "Threaten", "Protest", "Exhibit force posture", "Reduce relations", "Coerce", "Assault", "Fight", "Use mass violence"];
+        var caemo_name = cameo_labels[cameo]
+        window.alert("CAMEO: "+cameo+"\n Rodzaj wydarzenia: "+caemo_name+"\n Ilość zdarzeń : "+response.data)
+        
+        
+        
+
       })
       .catch(e => {
         console.log(e);

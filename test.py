@@ -26,9 +26,9 @@ import database_csv as db
 
 
 gd1 = gdelt.gdelt(version=1)
-results1= gd1.Search('20200528',table='events', output='pd')
-results2= gd1.Search('20200529',table='events', output='pd')
+results1= gd1.Search('20200513',table='events', output='pd')
+# results2= gd1.Search('20200529',table='events', output='pd')
 tmp1 = results1[["SQLDATE",'EventCode',"Actor1Code", "Actor2Code", "DATEADDED",  "AvgTone", "ActionGeo_Lat", "ActionGeo_Long"]]
-tmp2 = results2[["SQLDATE",'EventCode',"Actor1Code", "Actor2Code", "DATEADDED",  "AvgTone", "ActionGeo_Lat", "ActionGeo_Long"]]
+# tmp2 = results2[["SQLDATE",'EventCode',"Actor1Code", "Actor2Code", "DATEADDED",  "AvgTone", "ActionGeo_Lat", "ActionGeo_Long"]]
 
 print(tmp1)
