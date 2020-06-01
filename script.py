@@ -145,3 +145,19 @@ def actors_action_geo(data: pd.DataFrame, cameo_1, cameo_2):
     filter1 = (results["Actor1Code"] == cameo_1) | (results["Actor2Code"] == cameo_1)
     filter2 = (results["Actor2Code"] == cameo_2) | (results["Actor1Code"] == cameo_2)
     return results[filter1 & filter2]
+
+def actors_action_geo_json(data: pd.DataFrame, cameo_1, cameo_2):
+    result1 = actors_action_geo(data, cameo_1, cameo_2)
+    lat = result1["ActionGeo_Lat"]
+    longg = result1["ActionGeo_Long"]
+    res = {}
+    for x, val in lat.items():
+        inp = (val, longg[x])
+        if(inp in res):
+            res[inp] += 1
+        else:
+            res[inp] = 1
+    finresult = []
+    for x, val in res.items():
+        finresult.append((x[0], x[1], val))
+    return finresult

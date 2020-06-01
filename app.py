@@ -51,17 +51,9 @@ def actors_action_geo():
     else:
         date = [start, stop]
     data = gd1.Search(date, table='events', output='pd')
-    result = scripts.actors_action_geo(data, actor1, actor2)
-    print(result)
-    lat = result["ActionGeo_Lat"]
-    longg = result["ActionGeo_Long"]
-    res = []
-    for x, val in lat.items():
-        print(val)
-        res.append((val, longg[x]))
-    print(res)
-    print(json.dumps(res))
-    return json.dumps(res)
+    result = scripts.actors_action_geo_json(data, actor1, actor2)
+    print(json.dumps(result))
+    return json.dumps(result)
 
 
 # stworzenie nowej sesji (zakres czasu)

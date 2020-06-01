@@ -1,5 +1,5 @@
 <template>
-  <div class="bubble-map fill-height" id="mapp"/>
+  <div class="bubble-map fill-height fill-width" id="mapp"/>
 </template>
 
 <script>
@@ -19,8 +19,8 @@ export default {
   methods: {
     drawMap (bubbleMapData) {
       /* global AmCharts */
-      //const minBulletSize = 3
-      //const maxBulletSize = 70
+      const minBulletSize = 6
+      const maxBulletSize = 20
       //let min = Infinity
       //let max = -Infinity
       AmCharts.theme = AmCharts.themes.light
@@ -47,32 +47,43 @@ export default {
         images: [],
       }
 
+      var maxAmount = 0;
+      var minAmount = Infinity;
+      bubbleMapData.forEach((dataItem) => {
+        if(dataItem[2]>maxAmount){
+            maxAmount = dataItem[2];
+        }
+        if(dataItem[2]<minAmount){
+            minAmount = dataItem[2];
+        }
+      })
+
       // create circle for each country
       // it's better to use circle square to show difference between values, not a radius
-      //const maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI
-      //const minSquare = minBulletSize * minBulletSize * 2 * Math.PI
+      const maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI
+      const minSquare = minBulletSize * minBulletSize * 2 * Math.PI
 
       console.log("data",bubbleMapData);
       // create circle for each country
       bubbleMapData.forEach((dataItem) => {
         console.log(dataItem);
-        //const value = dataItem.value
+        const value = dataItem[2]
         // calculate size of a bubble
-        //let square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare
-        //if (square < minSquare) {
-        //  square = minSquare
-        //}
-        //const size = Math.sqrt(square / (Math.PI * 2))
+        let square = (value - minAmount) / (maxAmount - minAmount) * (maxSquare - minSquare) + minSquare
+        if (square < minSquare) {
+          square = minSquare
+        }
+        const size = Math.sqrt(square / (Math.PI * 2))
         //const id = dataItem.code
         dataProvider.images.push({
           type: 'circle',
-          width: 10,
-          height: 10,
+          width: size,
+          height: size,
           color: '#FFAA00',
           longitude: dataItem[1],
           latitude: dataItem[0],
-          title: "point",
-          value: 1,
+          title: "Amount",
+          value: dataItem[2],
         })
       })
       console.log(dataProvider.images);

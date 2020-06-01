@@ -2,9 +2,9 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-10">
-        <h1>GDELT</h1>
+        <h1>MAPS</h1>
         <hr><br><br>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.map-search-modal1>Search</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.map-search-modal1>Events <br> between countries</button>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.map-search-modal2>Search</button>
         <br><br>
       </div>
@@ -12,7 +12,7 @@
 
     <b-modal ref="mapSearchDataframeModal1"
          id="map-search-modal1"
-         title="Search a map Dataframe"
+         title="Events between countries"
          hide-footer>
       <b-form @submit="onSubmit1" @reset="onReset1">
         <b-form-group id="form-start-group"
@@ -47,8 +47,8 @@
           </b-form-group>
 
         <b-button-group>
-          <b-button type="submit1" variant="primary">Submit1</b-button>
-          <b-button type="reset1" variant="danger">Reset1</b-button>
+          <b-button type="submit1" variant="primary">Submit</b-button>
+          <b-button type="reset1" variant="danger">Reset</b-button>
         </b-button-group>
       </b-form>
     </b-modal>
@@ -99,11 +99,12 @@
     <b-modal ref="bubbleMapModal"
          id="bubble-map-modal"
          title="bubble-map-tittle"
-         class="col-sm-10"
+         class="col-sm-12"
+         size="xl"
          hide-footer>          
          <bubble-map
             :map-data="bubbleMapData"
-            style="height: 90vh;"
+            style="height: 80vh;"
           />
     </b-modal>
 
