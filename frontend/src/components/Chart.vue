@@ -293,7 +293,7 @@ export default {
       },
       loading: false,
       showMenu: false,
-      width: 1350,
+      width: 1400,
       height: 900,
       margin: 40,
       svg: null
@@ -461,6 +461,7 @@ export default {
     },
     onSubmitValueInTime(evt) {
       evt.preventDefault();
+      this.$refs.valueInTimeModal.hide();
       this.loading = true;
       const payload = {
         df_name: "raw_result",
@@ -481,6 +482,7 @@ export default {
     },
     onSubmitPolynomialFit(evt) {
       evt.preventDefault();
+      this.$refs.polynomialFitModal.hide();
       this.loading = true;
       const payload = {
         df_name: "raw_result",
@@ -502,6 +504,7 @@ export default {
     },
     onSubmitMeanStdVar(evt) {
       evt.preventDefault();
+      this.$refs.meanStdVarModal.hide();
       this.loading = true;
       const payload = {
         df_name: "raw_result",
@@ -522,6 +525,7 @@ export default {
     },
     onSubmitMedian(evt) {
       evt.preventDefault();
+      this.$refs.medianModal.hide();
       this.loading = true;
       const payload = {
         df_name: "raw_result",
@@ -542,6 +546,7 @@ export default {
     },
     onSubmitRangePtp(evt) {
       evt.preventDefault();
+      this.$refs.rangePtpModal.hide();
       this.loading = true;
       const payload = {
         df_name: "raw_result",
@@ -562,6 +567,7 @@ export default {
     },
     onSubmitPercentile(evt) {
       evt.preventDefault();
+      this.$refs.percentileModal.hide();
       this.loading = true;
       const payload = {
         df_name: "raw_result",
