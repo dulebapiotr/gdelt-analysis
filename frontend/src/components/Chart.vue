@@ -368,16 +368,18 @@ export default {
         console.log(response)
         this.loading = false;
         var radius =  Math.min(this.width, this.height) / 2 - this.margin;
-
         if(this.svg == null) {
           this.svg = d3.select("#arc")
             .append("svg")
               .attr("width", this.width)
               .attr("height", this.height)
             .append("g")
-              .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
+              .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")")
+        
         }
 
+        var cameo_labels = ["Make public statement", "Appeal", "Express intent to cooperate", "Consult", "Enagage in diplomatic cooperation", "Engage in material cooperation", "Prove Aid", "Yield", "Investigate", "Demand", "Disapprove", "Rejecr", "Threaten", "Protest", "Exhibit force posture", "Reduce relations", "Coerce", "Assault", "Fight", "Use mass violence"];
+        
         // set the color scale
         var color = d3.scaleOrdinal()
           .domain(response.data.map(x => x.event_type_cameo))
@@ -388,6 +390,12 @@ export default {
           .sort(null) // Do not sort group by size
           .value(function(d) {return d.count; })
         var data_ready = pie(response.data)
+        data_ready.forEach(cameoFunction);
+        function cameoFunction(value, index){
+          data_ready[index].cameo_label = cameo_labels[index]
+        }
+        console.log(data_ready)
+        
 
         // The arc generator
         var arc = d3.arc()
@@ -406,7 +414,7 @@ export default {
           .enter()
           .append('path')
           .attr('d', arc)
-          .attr('fill', function(d){ return(color(d.data.event_type_cameo)) })
+          .attr('fill', function(d){ return(color(d.cameo_label)) })
           .attr("stroke", "white")
           .style("stroke-width", "2px")
           .style("opacity", 0.7)
@@ -435,7 +443,7 @@ export default {
           .data(data_ready)
           .enter()
           .append('text')
-            .text( function(d) { console.log(d.data.event_type_cameo) ; return d.data.event_type_cameo } )
+            .text( function(d) { console.log(d.data.event_type_cameo) ; return d.cameo_label } )
             .attr('transform', function(d) {
                 var pos = outerArc.centroid(d);
                 var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
