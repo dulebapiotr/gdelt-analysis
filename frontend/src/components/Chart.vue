@@ -57,8 +57,8 @@
           <span v-b-modal.percentile>percentile</span>
         </radial-menu-item>
       </radial-menu>
-      </div>
     </div>
+  </div>
 
 
 
@@ -239,6 +239,7 @@
         </b-button-group>
       </b-form>
     </b-modal>
+
   </div>
 </template>
 
@@ -515,6 +516,10 @@ export default {
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
+        var mean = response.data.mean;
+        var std_dev = response.data.std_dev;
+        var variance = response.data.variance;
+        window.alert("Column: " + this.meanStdVarForm.column_name + "\n Mean: " + mean + "\n Standard deviation: " + std_dev + "\n Variance: " + variance);
         this.loading = false;
         console.log(response.data);
         this.data = response.data;
