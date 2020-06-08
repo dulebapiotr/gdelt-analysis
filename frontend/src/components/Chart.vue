@@ -9,6 +9,7 @@
         <b-spinner v-if="loading" style="margin: auto; width: 5rem; height: 5rem;" label="Large Spinner"></b-spinner>
         <br>
         <div id="arc" />
+        <line-chart v-if="showDataPoly" :data="dataPoly" />
         <radial-menu
       style="margin: auto; margin-top: 300px; background-color: red"
       :itemSize="150"
@@ -18,7 +19,7 @@
 
         <radial-menu-item
           style="background-color: white"
-          
+
           >
           <span v-b-modal.count-events>count events</span>
         </radial-menu-item>
@@ -243,6 +244,7 @@
       </b-form>
     </b-modal>
 
+
   </div>
 </template>
 
@@ -300,7 +302,9 @@ export default {
       width: 1400,
       height: 900,
       margin: 40,
-      svg: null
+      svg: null,
+      dataPoly: [],
+      showDataPoly: false
     }
   },
   methods: {
@@ -355,14 +359,14 @@ export default {
         this.loading = false;
         console.log(response.data);
         this.data = response.data ;
-        
+
         var cameo = this.countEventsForm.event_type
         var cameo_labels = ["Make public statement", "Appeal", "Express intent to cooperate", "Consult", "Enagage in diplomatic cooperation", "Engage in material cooperation", "Prove Aid", "Yield", "Investigate", "Demand", "Disapprove", "Reject", "Threaten", "Protest", "Exhibit force posture", "Reduce relations", "Coerce", "Assault", "Fight", "Use mass violence"];
         var caemo_name = cameo_labels[cameo]
         window.alert("CAMEO: "+cameo+"\n Rodzaj wydarzenia: "+caemo_name+"\n Ilość zdarzeń : "+response.data)
-        
-        
-        
+
+
+
 
       })
       .catch(e => {
@@ -509,7 +513,32 @@ export default {
       .then(response => {
         this.loading = false;
         console.log(response.data);
-        this.data = response.data;
+        function lol(val) {
+          var toReduce = response.data.map((x, index) => {
+            return x* Math.pow(val, index);
+          });
+          var sum = 0;
+          for(var x of toReduce) {
+            sum += x;
+          }
+          return sum
+        }
+        var list = [];
+        for (var i = -10; i <= 10; i++) {
+            list.push(i);
+        }
+
+        var dataa = []
+
+        for(i of list) {
+          dataa.push([i, lol(i)]);
+        }
+        this.dataPoly = [
+  {name: this.polynomialFitForm.column_name, data: dataa}
+];
+this.showDataPoly = true;
+
+// an
       })
       .catch(e => {
         console.log(e);
@@ -595,7 +624,7 @@ export default {
         }
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
-      .then(response => {        
+      .then(response => {
         window.alert("Column: " + this.percentileForm.column_name + "\nPercentile: " + this.percentileForm.percentile + "\nResult: " + response.data);
         this.loading = false;
         console.log(response.data);
