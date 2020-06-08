@@ -30,6 +30,8 @@ def count_by_day(data: pd.DataFrame):
 
 # punkt 5 analiz ilościowych - dla danej kolumny(jej nazwy) pokazuje jej wartości w czasie (uporządkowanym),
 # nie wiem czy o to tutaj chodzi XD
+
+
 def value_in_time(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     value = args['value']
@@ -42,7 +44,7 @@ def value_in_time(data: pd.DataFrame, args: Dict):
 def polynomial_fit(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     column_name = args["column_name"]
-    degree = args["degree"]
+    degree = int(args["degree"])
     if column_name not in data.columns:
         raise Exception
     vector = data[column_name]
@@ -101,7 +103,8 @@ def get_percentile(data: pd.DataFrame, args: Dict):
 
 # zwraca datafame z ilościa i % występowania poszczególnych typów zdarzeń w danym datasecie
 def event_types_ratio(data: pd.DataFrame, _):
-    event_count = data.shape[0]  # no bo tyle jest wszystkich zdarzeń co rekordów
+    # no bo tyle jest wszystkich zdarzeń co rekordów
+    event_count = data.shape[0]
     dictionary = {"event_type_cameo": [], "count": [], "ratio": []}
     for x in range(1, 21):
         count = count_events(data, {"event_type": x})
@@ -145,7 +148,8 @@ def avg_goldstein_with_other_countries(data: pd.DataFrame, cameo1):
             num = dictionary[row["Actor2Code"]][1]
             avg = dictionary[row["Actor2Code"]][0]
             new_value = row["AvgTone"]
-            dictionary[row["Actor2Code"]] = ((avg * num + new_value) / (num + 1), num + 1)
+            dictionary[row["Actor2Code"]] = (
+                (avg * num + new_value) / (num + 1), num + 1)
     result = pd.DataFrame(data=dictionary).T
     result.columns = ["avg_goldstein", "events_count"]
     return result
@@ -154,9 +158,12 @@ def avg_goldstein_with_other_countries(data: pd.DataFrame, cameo1):
 # zwraca dataframe z współrzędnymi geograficznymi wydarzeń zachocących pomiędzy daną parą aktorów (podajemy ich kody
 # CAMEO)
 def actors_action_geo(data: pd.DataFrame, cameo_1, cameo_2):
-    results = data[["Actor1Code", "Actor2Code", "ActionGeo_Lat", "ActionGeo_Long"]]
-    filter1 = (results["Actor1Code"] == cameo_1) | (results["Actor2Code"] == cameo_1)
-    filter2 = (results["Actor2Code"] == cameo_2) | (results["Actor1Code"] == cameo_2)
+    results = data[["Actor1Code", "Actor2Code",
+                    "ActionGeo_Lat", "ActionGeo_Long"]]
+    filter1 = (results["Actor1Code"] == cameo_1) | (
+        results["Actor2Code"] == cameo_1)
+    filter2 = (results["Actor2Code"] == cameo_2) | (
+        results["Actor1Code"] == cameo_2)
     return results[filter1 & filter2]
 
 
