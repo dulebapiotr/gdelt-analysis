@@ -14,6 +14,7 @@ quantitative_analysis_dict = {
     'median': get_median,
     'range_ptp': get_range_ptp,
     'percentile': get_percentile,
+    'filter': filter_events_relation,
 }
 
 

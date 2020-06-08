@@ -1,5 +1,5 @@
 from typing import Dict
-
+import json
 import gdelt
 import pandas as pd
 import numpy as np
@@ -8,7 +8,7 @@ import numpy as np
 # TODO: split into separate files
 
 # Graphable analyses
-# zwraca liczbe rodzajów wydarzeń w danym datasecie, biorę pod uwagę 2 pierwsze cyfry kodu CAMEO
+# Deprecated
 def count_events(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     print(args)
@@ -22,12 +22,48 @@ def count_events(data: pd.DataFrame, args: Dict):
     return int(checked.sum())
 
 
-def count_by_day(data: pd.DataFrame):
+def filter_events_relation(data: pd.DataFrame, args: Dict):
+    """
+    sample args to find events of Goldstein Scale 0<=6 with at least 2 sources:
+        {
+            filters: [
+                        {column_name: 'NumSources', relation: 'GT', reference: 2},
+                        {column_name: 'GoldsteinScale', relation: 'GTE', reference: 0},
+                        {column_name: 'GoldsteinScale', relation: 'LT', reference: 6}
+                     ]
+        }
+    """
+    days = data['SQLDATE'].unique()
+
+    for filter_dict in args['filters']:
+
+        column_name = filter_dict['column_name']
+        relation = filter_dict['relation']
+        reference = filter_dict['reference']
+
+        if relation == 'GT':
+            data = data.loc[data[column_name] > reference]
+        elif relation == 'LT':
+            data = data.loc[data[column_name] < reference]
+        elif relation == 'GTE':
+            data = data.loc[data[column_name] >= reference]
+        elif relation == 'LTE':
+            data = data.loc[data[column_name] <= reference]
+        elif relation == 'EQ':
+            data = data.loc[data[column_name] == reference]
+        elif relation == 'NEQ':
+            data = data.loc[data[column_name] != reference]
+
+    return count_by_day(data, days)
+
+def count_by_day(data: pd.DataFrame, days: pd.DataFrame = pd.DataFrame()):
     grouped = data[['SQLDATE', 'GLOBALEVENTID']]
     grouped = grouped.groupby('SQLDATE').count()
     grouped = grouped.rename(columns={'GLOBALEVENTID': 'EVENTCOUNT'})
+    #TODO: add zero values for days with no data
     return grouped.sort_values(by='SQLDATE')
 
+# Deprecated (also wrong)
 # punkt 5 analiz ilościowych - dla danej kolumny(jej nazwy) pokazuje jej wartości w czasie (uporządkowanym),
 # nie wiem czy o to tutaj chodzi XD
 def value_in_time(data: pd.DataFrame, args: Dict):
@@ -42,7 +78,7 @@ def value_in_time(data: pd.DataFrame, args: Dict):
 def polynomial_fit(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     column_name = args["column_name"]
-    degree = args["degree"]
+    degree = int(args["degree"])
     if column_name not in data.columns:
         raise Exception
     vector = data[column_name]
@@ -101,7 +137,8 @@ def get_percentile(data: pd.DataFrame, args: Dict):
 
 # zwraca datafame z ilościa i % występowania poszczególnych typów zdarzeń w danym datasecie
 def event_types_ratio(data: pd.DataFrame, _):
-    event_count = data.shape[0]  # no bo tyle jest wszystkich zdarzeń co rekordów
+    # no bo tyle jest wszystkich zdarzeń co rekordów
+    event_count = data.shape[0]
     dictionary = {"event_type_cameo": [], "count": [], "ratio": []}
     for x in range(1, 21):
         count = count_events(data, {"event_type": x})
@@ -145,7 +182,8 @@ def avg_goldstein_with_other_countries(data: pd.DataFrame, cameo1):
             num = dictionary[row["Actor2Code"]][1]
             avg = dictionary[row["Actor2Code"]][0]
             new_value = row["AvgTone"]
-            dictionary[row["Actor2Code"]] = ((avg * num + new_value) / (num + 1), num + 1)
+            dictionary[row["Actor2Code"]] = (
+                (avg * num + new_value) / (num + 1), num + 1)
     result = pd.DataFrame(data=dictionary).T
     result.columns = ["avg_goldstein", "events_count"]
     return result
@@ -154,28 +192,43 @@ def avg_goldstein_with_other_countries(data: pd.DataFrame, cameo1):
 # zwraca dataframe z współrzędnymi geograficznymi wydarzeń zachocących pomiędzy daną parą aktorów (podajemy ich kody
 # CAMEO)
 def actors_action_geo(data: pd.DataFrame, cameo_1, cameo_2):
-    results = data[["Actor1Code", "Actor2Code", "ActionGeo_Lat", "ActionGeo_Long"]]
-    filter1 = (results["Actor1Code"] == cameo_1) | (results["Actor2Code"] == cameo_1)
-    filter2 = (results["Actor2Code"] == cameo_2) | (results["Actor1Code"] == cameo_2)
+    results = data[["Actor1Code", "Actor2Code",
+                    "ActionGeo_Lat", "ActionGeo_Long"]]
+    filter1 = (results["Actor1Code"] == cameo_1) | (
+        results["Actor2Code"] == cameo_1)
+    filter2 = (results["Actor2Code"] == cameo_2) | (
+        results["Actor1Code"] == cameo_2)
     return results[filter1 & filter2]
 
 
 def actors_action_geo_json(data: pd.DataFrame, cameo_1, cameo_2):
     result1 = actors_action_geo(data, cameo_1, cameo_2)
     lat = result1["ActionGeo_Lat"]
-    longg = result1["ActionGeo_Long"]
+    lon = result1["ActionGeo_Long"]
     res = {}
     for x, val in lat.items():
-        inp = (val, longg[x])
+        inp = (val, lon[x])
         if inp in res:
             res[inp] += 1
         else:
             res[inp] = 1
-    finresult = []
+    final_result = []
     for x, val in res.items():
-        finresult.append((x[0], x[1], val))
-    return finresult
+        final_result.append((x[0], x[1], val))
+    return final_result
 
 
 if __name__ == "__main__":
-    print(count_by_day(pd.read_csv("data.csv")))
+    sample_data = pd.read_csv("data.csv")
+    print(sample_data)
+    print(count_by_day(sample_data))
+    sample_args = json.loads("""{
+                                    "filters": [
+                                        {"column_name": "NumSources", "relation": "GT", "reference": 2},
+                                        {"column_name": "GoldsteinScale", "relation": "GTE", "reference": 0},
+                                        {"column_name": "GoldsteinScale", "relation": "LT", "reference": 6}
+                                    ]
+                                }
+                                """
+                             )
+    print(filter_events_relation(sample_data, sample_args))
