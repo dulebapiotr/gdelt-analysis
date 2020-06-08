@@ -56,12 +56,14 @@ def filter_events_relation(data: pd.DataFrame, args: Dict):
 
     return count_by_day(data, days)
 
+
 def count_by_day(data: pd.DataFrame, days: pd.DataFrame = pd.DataFrame()):
     grouped = data[['SQLDATE', 'GLOBALEVENTID']]
     grouped = grouped.groupby('SQLDATE').count()
     grouped = grouped.rename(columns={'GLOBALEVENTID': 'EVENTCOUNT'})
-    #TODO: add zero values for days with no data
+    # TODO: add zero values for days with no data
     return grouped.sort_values(by='SQLDATE')
+
 
 # Deprecated (also wrong)
 # punkt 5 analiz ilościowych - dla danej kolumny(jej nazwy) pokazuje jej wartości w czasie (uporządkowanym),
@@ -75,7 +77,7 @@ def value_in_time(data: pd.DataFrame, args: Dict):
 
 
 # tested!
-def polynomial_fit(data: pd.DataFrame, args: Dict):
+def polynomial_fit_common(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     column_name = args["column_name"]
     degree = int(args["degree"])
@@ -86,8 +88,21 @@ def polynomial_fit(data: pd.DataFrame, args: Dict):
         y=vector,
         x=range(0, len(vector)),
         deg=degree)
+    return polyfit
 
-    return polyfit.coef.tolist()
+
+def polynomial_fit(data: pd.DataFrame, args: Dict):
+    return polynomial_fit_common(data, args).coef.tolist()
+
+
+def polynomial_fit_df(data: pd.DataFrame, args: Dict):
+    polynomial = polynomial_fit(data, args)
+    dates = data["SQLDATE"]
+    values = [polynomial(i) for i in range(0, len(dates))]
+    dates["polynomial_value"] = values
+    return {"coefficients": polynomial,
+            "dataframe": dates
+            }
 
 
 # tested!
@@ -111,6 +126,17 @@ def get_median(data: pd.DataFrame, args: Dict):
     return np.median(data[column_name])
 
 
+def get_median_df(data: pd.DataFrame, args: Dict):
+    dates = data["SQLDATE"]
+    size = len(data)
+    median = get_median(data, args)
+    dates["median"] = [median] * size
+    return {
+        "median": median,
+        "dataframe": dates
+    }
+
+
 # tested!
 def get_range_ptp(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
@@ -118,9 +144,19 @@ def get_range_ptp(data: pd.DataFrame, args: Dict):
     if column_name not in data.columns:
         raise Exception
     vector = data[column_name]
-    return {"min": int(np.amin(vector)),
-            "max": int(np.amax(vector)),
-            "ptp": int(np.ptp(vector))}
+    amin = int(np.amin(vector))
+    amax = int(np.amax(vector))
+    ptp = int(np.ptp(vector))
+    dates = data["SQLDATE"]
+    size = len(data)
+    dates["min"] = [amin] * size
+    dates["max"] = [amax] * size
+    dates["ptp"] = [ptp] * size
+    return {"min": amin,
+            "max": amax,
+            "ptp": ptp,
+            "dataframe": dates
+            }
 
 
 # tested!
@@ -133,6 +169,17 @@ def get_percentile(data: pd.DataFrame, args: Dict):
     elif not 0 <= percentile <= 100:
         raise Exception
     return np.percentile(data[column_name], percentile)
+
+
+def get_percentile_df(data: pd.DataFrame, args: Dict):
+    dates = data["SQLDATE"]
+    size = len(data)
+    percentile = get_percentile(data, args)
+    dates["percentile"] = [percentile] * size
+    return {
+        "percentile": percentile,
+        "dataframe": dates
+    }
 
 
 # zwraca datafame z ilościa i % występowania poszczególnych typów zdarzeń w danym datasecie
@@ -195,9 +242,9 @@ def actors_action_geo(data: pd.DataFrame, cameo_1, cameo_2):
     results = data[["Actor1Code", "Actor2Code",
                     "ActionGeo_Lat", "ActionGeo_Long"]]
     filter1 = (results["Actor1Code"] == cameo_1) | (
-        results["Actor2Code"] == cameo_1)
+            results["Actor2Code"] == cameo_1)
     filter2 = (results["Actor2Code"] == cameo_2) | (
-        results["Actor1Code"] == cameo_2)
+            results["Actor1Code"] == cameo_2)
     return results[filter1 & filter2]
 
 
@@ -231,4 +278,6 @@ if __name__ == "__main__":
                                 }
                                 """
                              )
-    print(filter_events_relation(sample_data, sample_args))
+    filtered_data = filter_events_relation(sample_data, sample_args)
+    print(filtered_data)
+    print(get_range_ptp(sample_data, {"column_name": "NumSources"}))
