@@ -22,6 +22,12 @@ def count_events(data: pd.DataFrame, args: Dict):
     return int(checked.sum())
 
 
+def count_by_day(data: pd.DataFrame):
+    grouped = data[['SQLDATE', 'GLOBALEVENTID']]
+    grouped = grouped.groupby('SQLDATE').count()
+    grouped = grouped.rename(columns={'GLOBALEVENTID': 'EVENTCOUNT'})
+    return grouped.sort_values(by='SQLDATE')
+
 # punkt 5 analiz ilościowych - dla danej kolumny(jej nazwy) pokazuje jej wartości w czasie (uporządkowanym),
 # nie wiem czy o to tutaj chodzi XD
 def value_in_time(data: pd.DataFrame, args: Dict):
@@ -47,6 +53,7 @@ def polynomial_fit(data: pd.DataFrame, args: Dict):
 
     return polyfit.coef.tolist()
 
+
 # tested!
 def get_mean_std_var(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
@@ -58,6 +65,7 @@ def get_mean_std_var(data: pd.DataFrame, args: Dict):
             "std_dev": vector.std(),
             "variance": vector.var()}
 
+
 # tested!
 def get_median(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
@@ -65,6 +73,7 @@ def get_median(data: pd.DataFrame, args: Dict):
     if column_name not in data.columns:
         raise Exception
     return np.median(data[column_name])
+
 
 # tested!
 def get_range_ptp(data: pd.DataFrame, args: Dict):
@@ -76,6 +85,7 @@ def get_range_ptp(data: pd.DataFrame, args: Dict):
     return {"min": int(np.amin(vector)),
             "max": int(np.amax(vector)),
             "ptp": int(np.ptp(vector))}
+
 
 # tested!
 def get_percentile(data: pd.DataFrame, args: Dict):
@@ -118,7 +128,8 @@ def count_events_between_countries(data: pd.DataFrame, cameo_1, cameo_2):
 def search_biggest_impact_on_countries(data: pd.DataFrame, cameo_1, cameo_2):
     df = events_between_countries(data, cameo_1, cameo_2)
     df = df.loc[(df['AvgTone'] >= 10) | (df['AvgTone'] <= -10)]
-    print(df)
+    return df
+
 
 # TODO: Gaben fix pls | czemu tu się nie używa cameo1?
 def avg_goldstein_with_other_countries(data: pd.DataFrame, cameo1):
@@ -138,6 +149,8 @@ def avg_goldstein_with_other_countries(data: pd.DataFrame, cameo1):
     result = pd.DataFrame(data=dictionary).T
     result.columns = ["avg_goldstein", "events_count"]
     return result
+
+
 # zwraca dataframe z współrzędnymi geograficznymi wydarzeń zachocących pomiędzy daną parą aktorów (podajemy ich kody
 # CAMEO)
 def actors_action_geo(data: pd.DataFrame, cameo_1, cameo_2):
@@ -146,6 +159,7 @@ def actors_action_geo(data: pd.DataFrame, cameo_1, cameo_2):
     filter2 = (results["Actor2Code"] == cameo_2) | (results["Actor1Code"] == cameo_2)
     return results[filter1 & filter2]
 
+
 def actors_action_geo_json(data: pd.DataFrame, cameo_1, cameo_2):
     result1 = actors_action_geo(data, cameo_1, cameo_2)
     lat = result1["ActionGeo_Lat"]
@@ -153,7 +167,7 @@ def actors_action_geo_json(data: pd.DataFrame, cameo_1, cameo_2):
     res = {}
     for x, val in lat.items():
         inp = (val, longg[x])
-        if(inp in res):
+        if inp in res:
             res[inp] += 1
         else:
             res[inp] = 1
@@ -161,3 +175,7 @@ def actors_action_geo_json(data: pd.DataFrame, cameo_1, cameo_2):
     for x, val in res.items():
         finresult.append((x[0], x[1], val))
     return finresult
+
+
+if __name__ == "__main__":
+    print(count_by_day(pd.read_csv("data.csv")))

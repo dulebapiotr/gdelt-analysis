@@ -3,7 +3,7 @@ import traceback
 from Session import Session
 from typing import Dict, Tuple, Sequence
 import pandas as pd
-from script import *
+from analyses import *
 
 quantitative_analysis_dict = {
     'count_events': count_events,

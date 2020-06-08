@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
 import gdelt
-import script as scripts
+import analyses as scripts
 from flask_cors import CORS
 import gdelt
 import datetime
