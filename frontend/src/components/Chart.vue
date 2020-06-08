@@ -94,9 +94,21 @@
           <b-form-group id="form-calumnName-group"
                       label="Column Name:"
                       label-for="form-columnName-input">
-            <input id="form-columnName-input"
-                            v-model="valueInTimeForm.column_name"
-                            required/>
+            <select id="form-columnName-input"
+                            v-model="valueInTimeForm.column_name">
+              <option>FractionDate</option>
+              <option>QuadClass</option>
+              <option>GoldsteinScale</option>
+              <option>NumMentions</option>
+              <option>NumSources</option>
+              <option>NumArticles</option>
+              <option>AvgTone</option>
+              <option>Actor1Geo_Type</option>
+              <option>Actor1Geo_FeatureID</option>
+              <option>DATEADDED</option>
+              <option>Actor2Geo_Type</option>
+              <option>Actor2Geo_FeatureID</option>
+            </select>
           </b-form-group>
 
           <b-button-group>
@@ -113,9 +125,21 @@
           <b-form-group id="form-calumnName-group"
                       label="Column Name:"
                       label-for="form-columnName-input">
-            <input id="form-columnName-input"
-                            v-model="polynomialFitForm.column_name"
-                            required/>
+            <select id="form-columnName-input"
+                            v-model="polynomialFitForm.column_name">
+              <option>FractionDate</option>
+              <option>QuadClass</option>
+              <option>GoldsteinScale</option>
+              <option>NumMentions</option>
+              <option>NumSources</option>
+              <option>NumArticles</option>
+              <option>AvgTone</option>
+              <option>Actor1Geo_Type</option>
+              <option>Actor1Geo_FeatureID</option>
+              <option>DATEADDED</option>
+              <option>Actor2Geo_Type</option>
+              <option>Actor2Geo_FeatureID</option>
+            </select>
           </b-form-group>
           <b-form-group id="form-degree-group"
                       label="Degree:"
@@ -139,9 +163,21 @@
           <b-form-group id="form-calumnName-group"
                       label="Column Name:"
                       label-for="form-columnName-input">
-            <input id="form-columnName-input"
-                            v-model="meanStdVarForm.column_name"
-                            required/>
+            <select id="form-columnName-input"
+                            v-model="meanStdVarForm.column_name">
+              <option>FractionDate</option>
+              <option>QuadClass</option>
+              <option>GoldsteinScale</option>
+              <option>NumMentions</option>
+              <option>NumSources</option>
+              <option>NumArticles</option>
+              <option>AvgTone</option>
+              <option>Actor1Geo_Type</option>
+              <option>Actor1Geo_FeatureID</option>
+              <option>DATEADDED</option>
+              <option>Actor2Geo_Type</option>
+              <option>Actor2Geo_FeatureID</option>
+            </select>
           </b-form-group>
 
           <b-button-group>
@@ -158,9 +194,21 @@
           <b-form-group id="form-calumnName-group"
                       label="Column Name:"
                       label-for="form-columnName-input">
-            <input id="form-columnName-input"
-                            v-model="medianForm.column_name"
-                            required/>
+            <select id="form-columnName-input"
+                            v-model="medianForm.column_name">
+              <option>FractionDate</option>
+              <option>QuadClass</option>
+              <option>GoldsteinScale</option>
+              <option>NumMentions</option>
+              <option>NumSources</option>
+              <option>NumArticles</option>
+              <option>AvgTone</option>
+              <option>Actor1Geo_Type</option>
+              <option>Actor1Geo_FeatureID</option>
+              <option>DATEADDED</option>
+              <option>Actor2Geo_Type</option>
+              <option>Actor2Geo_FeatureID</option>
+            </select>
           </b-form-group>
 
           <b-button-group>
@@ -177,9 +225,21 @@
           <b-form-group id="form-calumnName-group"
                       label="Column Name:"
                       label-for="form-columnName-input">
-            <input id="form-columnName-input"
-                            v-model="rangePtpForm.column_name"
-                            required/>
+            <select id="form-columnName-input"
+                            v-model="rangePtpForm.column_name">
+              <option>FractionDate</option>
+              <option>QuadClass</option>
+              <option>GoldsteinScale</option>
+              <option>NumMentions</option>
+              <option>NumSources</option>
+              <option>NumArticles</option>
+              <option>AvgTone</option>
+              <option>Actor1Geo_Type</option>
+              <option>Actor1Geo_FeatureID</option>
+              <option>DATEADDED</option>
+              <option>Actor2Geo_Type</option>
+              <option>Actor2Geo_FeatureID</option>
+            </select>
           </b-form-group>
 
           <b-button-group>
@@ -196,9 +256,21 @@
           <b-form-group id="form-calumnName-group"
                       label="Column Name:"
                       label-for="form-columnName-input">
-            <input id="form-columnName-input"
-                            v-model="percentileForm.column_name"
-                            required/>
+            <select id="form-columnName-input"
+                            v-model="percentileForm.column_name">
+              <option>FractionDate</option>
+              <option>QuadClass</option>
+              <option>GoldsteinScale</option>
+              <option>NumMentions</option>
+              <option>NumSources</option>
+              <option>NumArticles</option>
+              <option>AvgTone</option>
+              <option>Actor1Geo_Type</option>
+              <option>Actor1Geo_FeatureID</option>
+              <option>DATEADDED</option>
+              <option>Actor2Geo_Type</option>
+              <option>Actor2Geo_FeatureID</option>
+            </select>
           </b-form-group>
           <b-form-group id="form-percentile-group"
                       label="Percentile:"
