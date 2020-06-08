@@ -69,10 +69,10 @@ def new_session():
     global session
     session = Session()
     session.add_data(df, "raw_result")
-    return "succesfully got data"  # to stanowczo za duże żeby przesłać jsonem
+    return "succesfully got data"
 
 
-# pobranie danych z sesji (void) - chyba jednak nie jkest void xD
+# pobranie danych z sesji
 @app.route('/get_session', methods=["GET"])
 def get_session():
     global session

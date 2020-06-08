@@ -11,7 +11,6 @@ import numpy as np
 # Deprecated
 def count_events(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
-    print(args)
     event_type = int(args["event_type"])
     if not 1 <= event_type <= 20:
         return 0
@@ -59,10 +58,10 @@ def filter_events_relation(data: pd.DataFrame, args: Dict):
 
 def count_by_day(data: pd.DataFrame, days: pd.DataFrame = pd.DataFrame()):
     grouped = data[['SQLDATE', 'GLOBALEVENTID']]
-    grouped = grouped.groupby('SQLDATE').count()
+    grouped = grouped.groupby('SQLDATE', as_index=False).count()
     grouped = grouped.rename(columns={'GLOBALEVENTID': 'EVENTCOUNT'})
     # TODO: add zero values for days with no data
-    return grouped.sort_values(by='SQLDATE')
+    return grouped
 
 
 # Deprecated (also wrong)
@@ -97,7 +96,7 @@ def polynomial_fit(data: pd.DataFrame, args: Dict):
 
 def polynomial_fit_df(data: pd.DataFrame, args: Dict):
     polynomial = polynomial_fit(data, args)
-    dates = data["SQLDATE"]
+    dates = pd.DataFrame(data["SQLDATE"])
     values = [polynomial(i) for i in range(0, len(dates))]
     dates["polynomial_value"] = values
     return {"coefficients": polynomial,
@@ -112,9 +111,13 @@ def get_mean_std_var(data: pd.DataFrame, args: Dict):
     if column_name not in data.columns:
         raise Exception
     vector = data[column_name]
+    dates = pd.DataFrame(data["SQLDATE"])
+    size = len(dates)
+    dates["mean"] = [vector.mean()] * size
     return {"mean": vector.mean(),
             "std_dev": vector.std(),
-            "variance": vector.var()}
+            "variance": vector.var(),
+            "dataframe": dates}
 
 
 # tested!
@@ -127,10 +130,10 @@ def get_median(data: pd.DataFrame, args: Dict):
 
 
 def get_median_df(data: pd.DataFrame, args: Dict):
-    dates = data["SQLDATE"]
+    dates = pd.DataFrame(data["SQLDATE"])
     size = len(data)
     median = get_median(data, args)
-    dates["median"] = [median] * size
+    dates.insert(1, "median", [median] * size, True)
     return {
         "median": median,
         "dataframe": dates
@@ -147,7 +150,7 @@ def get_range_ptp(data: pd.DataFrame, args: Dict):
     amin = int(np.amin(vector))
     amax = int(np.amax(vector))
     ptp = int(np.ptp(vector))
-    dates = data["SQLDATE"]
+    dates = pd.DataFrame(data["SQLDATE"])
     size = len(data)
     dates["min"] = [amin] * size
     dates["max"] = [amax] * size
@@ -172,7 +175,7 @@ def get_percentile(data: pd.DataFrame, args: Dict):
 
 
 def get_percentile_df(data: pd.DataFrame, args: Dict):
-    dates = data["SQLDATE"]
+    dates = pd.DataFrame(data["SQLDATE"])
     size = len(data)
     percentile = get_percentile(data, args)
     dates["percentile"] = [percentile] * size
@@ -215,7 +218,6 @@ def search_biggest_impact_on_countries(data: pd.DataFrame, cameo_1, cameo_2):
     return df
 
 
-# TODO: Gaben fix pls | czemu tu się nie używa cameo1?
 def avg_goldstein_with_other_countries(data: pd.DataFrame, cameo1):
     df_trim = data.loc[data['Actor1Code'] == cameo1]
     df = df_trim[["Actor1Code", "Actor2Code", "AvgTone"]]
@@ -279,5 +281,6 @@ if __name__ == "__main__":
                                 """
                              )
     filtered_data = filter_events_relation(sample_data, sample_args)
-    print(filtered_data)
-    print(get_range_ptp(sample_data, {"column_name": "NumSources"}))
+    print(get_range_ptp(filtered_data, {"column_name": "EVENTCOUNT"}))
+    print(get_median_df(filtered_data, {"column_name": "EVENTCOUNT"})['dataframe'])
+    print(get_percentile_df(filtered_data, {"column_name": "EVENTCOUNT", "percentile": 42}))

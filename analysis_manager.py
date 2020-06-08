@@ -12,8 +12,10 @@ quantitative_analysis_dict = {
     'polynomial_fit': polynomial_fit,
     'mean_std_var': get_mean_std_var,
     'median': get_median,
+    'median_df': get_median_df,
     'range_ptp': get_range_ptp,
     'percentile': get_percentile,
+    'percentile_df': get_percentile_df,
     'filter': filter_events_relation,
 }
 
