@@ -9,7 +9,7 @@
         <b-spinner v-if="loading" style="margin: auto; width: 5rem; height: 5rem;" label="Large Spinner"></b-spinner>
         <br>
         <div id="arc" />
-        <line-chart v-if="showDataPoly" :data="dataPoly" />
+        <line-chart :download="true" v-if="showDataPoly" :data="dataPoly" />
         <radial-menu
       style="margin: auto; margin-top: 300px; background-color: red"
       :itemSize="150"
