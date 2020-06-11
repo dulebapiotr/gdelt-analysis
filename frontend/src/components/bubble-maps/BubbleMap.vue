@@ -1,7 +1,6 @@
 <template>
   <div class="bubble-map fill-height fill-width" id="mapp"/>
 </template>
-
 <script>
 import 'amcharts3'
 import 'amcharts3/amcharts/plugins/responsive/responsive.js'
@@ -10,6 +9,7 @@ import 'amcharts3/amcharts/themes/light'
 
 import 'ammap3'
 import 'ammap3/ammap/maps/js/worldLow'
+import "ammap3/ammap/plugins/export/export.js" 
 
 export default {
   name: 'bubble-map',
@@ -45,6 +45,28 @@ export default {
       const dataProvider = {
         mapVar: AmCharts.maps.worldLow,
         images: [],
+      }
+      
+      map.chartDiv.export =  {
+        enabled: true,
+        menu: [{
+            format: "JPG",
+            label: "Save as JPG",
+            title: "Export chart to JPG",
+          }, "PNG"]
+      }
+
+      map.export =  {
+        enabled: true,
+        menu: [{
+            format: "PDF",
+            label: "Save as PDF",
+            title: "Export chart to PDF",
+          }, {
+            format: "IMG",
+            label: "Save as IMG",
+            title: "Export chart to IMG",
+          }]
       }
 
       var maxAmount = 0;
