@@ -29,6 +29,20 @@ Uruchomienie części frontendowej:
 $ cd gdelt-analysis
 $ npm run serve
 ```
-## Korzystanie z systemu.
+## Uruchomienie przykładowej analizy.
 Wejdź na stronę:
-<http://localhost:8080>
+<http://localhost:8080><br />
+![image info](./graphics/main_page.png)
+<br />
+Wybierz zakres czasu:
+<br />
+![image info](./graphics/select_date.png)
+<br />
+Po załadowaniu danych dostępne są następujące analizy:
+<br />
+![image info](./graphics/available_analysis.png)
+<br />
+Wynik przykładowej anlizy - Events type ratio (proporcje poszczegółnych typów zdarzeń):
+<br />
+![image info](./graphics/events_ratio.png)
+<br />
