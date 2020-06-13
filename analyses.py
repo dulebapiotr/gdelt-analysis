@@ -97,10 +97,10 @@ def polynomial_fit(data: pd.DataFrame, args: Dict):
 def polynomial_fit_df(data: pd.DataFrame, args: Dict):
     polynomial = polynomial_fit(data, args)
     dates = pd.DataFrame(data["SQLDATE"])
-    values = [polynomial(i) for i in range(0, len(dates))]
+    values = [np.polynomial.polynomial.polyval(x, polynomial) for x in range(0, len(dates))]
     dates["polynomial_value"] = values
     return {"coefficients": polynomial,
-            "dataframe": dates
+            "dataframe": dates.to_json()
             }
 
 
@@ -117,7 +117,7 @@ def get_mean_std_var(data: pd.DataFrame, args: Dict):
     return {"mean": vector.mean(),
             "std_dev": vector.std(),
             "variance": vector.var(),
-            "dataframe": dates}
+            "dataframe": dates.to_json()}
 
 
 # tested!
@@ -136,7 +136,7 @@ def get_median_df(data: pd.DataFrame, args: Dict):
     dates.insert(1, "median", [median] * size, True)
     return {
         "median": median,
-        "dataframe": dates
+        "dataframe": dates.to_json()
     }
 
 
@@ -158,7 +158,7 @@ def get_range_ptp(data: pd.DataFrame, args: Dict):
     return {"min": amin,
             "max": amax,
             "ptp": ptp,
-            "dataframe": dates
+            "dataframe": dates.to_json()
             }
 
 
@@ -181,7 +181,7 @@ def get_percentile_df(data: pd.DataFrame, args: Dict):
     dates["percentile"] = [percentile] * size
     return {
         "percentile": percentile,
-        "dataframe": dates
+        "dataframe": dates.to_json()
     }
 
 
@@ -270,6 +270,7 @@ def actors_action_geo_json(data: pd.DataFrame, cameo_1, cameo_2):
 if __name__ == "__main__":
     sample_data = pd.read_csv("data.csv")
     print(sample_data)
+    print(polynomial_fit_df(sample_data, {"column_name": "GoldsteinScale", "degree": 2}))
     print(count_by_day(sample_data))
     sample_args = json.loads("""{
                                     "filters": [
