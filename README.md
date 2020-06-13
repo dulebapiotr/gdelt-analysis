@@ -1,4 +1,4 @@
-# Gdelt Analysis 
+# Gdelt Analysis
 Jest to program zrealizowany w ramach przedmiotu Inżynieria Oprogramowania kierunku Informatyka na Akademii Górniczo-Hutniczej.
 Został on zrealizowany w składzie 4-osobowym: Jan Ilczuk, Piotr Dulęba, Ignacy Grudziński, Sebastian Wilk.
 ## Opis
@@ -21,7 +21,7 @@ $ python app.py
 Zainstalowanie wymaganych paczek i uruchomienie części frontendowej:
 ```console
 $ cd gdelt-analysis/frontend
-$ npm instal
+$ npm install
 $ npm run serve
 ```
 ## Uruchomienie przykładowej analizy.
