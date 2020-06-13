@@ -29,3 +29,6 @@ Uruchomienie części frontendowej:
 $ cd gdelt-analysis
 $ npm run serve
 ```
+## Korzystanie z systemu.
+Wejdź na stronę:
+<http://localhost:8080>
