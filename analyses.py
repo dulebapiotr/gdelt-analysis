@@ -99,6 +99,8 @@ def polynomial_fit_df(data: pd.DataFrame, args: Dict):
     dates = pd.DataFrame(data["SQLDATE"])
     values = [np.polynomial.polynomial.polyval(x, polynomial) for x in range(0, len(dates))]
     dates["polynomial_value"] = values
+    dates.reset_index(drop=True, inplace=True)
+    print(dates)
     return {"coefficients": polynomial,
             "dataframe": dates.to_json()
             }
@@ -269,19 +271,19 @@ def actors_action_geo_json(data: pd.DataFrame, cameo_1, cameo_2):
 
 if __name__ == "__main__":
     sample_data = pd.read_csv("data.csv")
-    print(sample_data)
+    # print(sample_data)
     print(polynomial_fit_df(sample_data, {"column_name": "GoldsteinScale", "degree": 2}))
-    print(count_by_day(sample_data))
-    sample_args = json.loads("""{
-                                    "filters": [
-                                        {"column_name": "NumSources", "relation": "GT", "reference": 2},
-                                        {"column_name": "GoldsteinScale", "relation": "GTE", "reference": 0},
-                                        {"column_name": "GoldsteinScale", "relation": "LT", "reference": 6}
-                                    ]
-                                }
-                                """
-                             )
-    filtered_data = filter_events_relation(sample_data, sample_args)
-    print(get_range_ptp(filtered_data, {"column_name": "EVENTCOUNT"}))
-    print(get_median_df(filtered_data, {"column_name": "EVENTCOUNT"})['dataframe'])
-    print(get_percentile_df(filtered_data, {"column_name": "EVENTCOUNT", "percentile": 42}))
+    # print(count_by_day(sample_data))
+    # sample_args = json.loads("""{
+    #                                 "filters": [
+    #                                     {"column_name": "NumSources", "relation": "GT", "reference": 2},
+    #                                     {"column_name": "GoldsteinScale", "relation": "GTE", "reference": 0},
+    #                                     {"column_name": "GoldsteinScale", "relation": "LT", "reference": 6}
+    #                                 ]
+    #                             }
+    #                             """
+    #                          )
+    # filtered_data = filter_events_relation(sample_data, sample_args)
+    # print(get_range_ptp(filtered_data, {"column_name": "EVENTCOUNT"}))
+    # print(get_median_df(filtered_data, {"column_name": "EVENTCOUNT"})['dataframe'])
+    # print(get_percentile_df(filtered_data, {"column_name": "EVENTCOUNT", "percentile": 42}))
