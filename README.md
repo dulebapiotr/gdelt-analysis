@@ -1,4 +1,4 @@
-# Gdelt Analysis 
+# Gdelt Analysis
 Jest to program zrealizowany w ramach przedmiotu Inżynieria Oprogramowania kierunku Informatyka na Akademii Górniczo-Hutniczej.
 Został on zrealizowany w składzie 4-osobowym: Jan Ilczuk, Piotr Dulęba, Ignacy Grudziński, Sebastian Wilk.
 ## Opis
@@ -10,25 +10,18 @@ Pobranie repozytorium:
 ```console
 $ git clone https://github.com/dulebapiotr/gdelt-analysis
 ```
-Zainstalowanie wymaganych paczek dla części backendowej:
-```console
-$ pip install flask
-$ pip install gdelt
-$ pip install pandas
-```
-Zainstalowanie wymaganych paczek dla części frontendowej:
-```console
-$ npm install i
-```
-Uruchomienie części backendowej:
+Zainstalowanie wymaganych paczek i uruchomienie części backendowej:
 ```console
 $ cd gdelt-analysis
+$ pip install -r requirements.txt
 $ python app.py
 ```
 
-Uruchomienie części frontendowej:
+
+Zainstalowanie wymaganych paczek i uruchomienie części frontendowej:
 ```console
 $ cd gdelt-analysis/frontend
+$ npm install
 $ npm run serve
 ```
 ## Uruchomienie przykładowej analizy.
