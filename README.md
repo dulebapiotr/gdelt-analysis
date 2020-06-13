@@ -10,25 +10,18 @@ Pobranie repozytorium:
 ```console
 $ git clone https://github.com/dulebapiotr/gdelt-analysis
 ```
-Zainstalowanie wymaganych paczek dla części backendowej:
-```console
-$ pip install flask
-$ pip install gdelt
-$ pip install pandas
-```
-Zainstalowanie wymaganych paczek dla części frontendowej:
-```console
-$ npm install i
-```
-Uruchomienie części backendowej:
+Zainstalowanie wymaganych paczek i uruchomienie części backendowej:
 ```console
 $ cd gdelt-analysis
+$ pip install -r requirements.txt
 $ python app.py
 ```
 
-Uruchomienie części frontendowej:
+
+Zainstalowanie wymaganych paczek i uruchomienie części frontendowej:
 ```console
 $ cd gdelt-analysis/frontend
+$ npm instal
 $ npm run serve
 ```
 ## Uruchomienie przykładowej analizy.
