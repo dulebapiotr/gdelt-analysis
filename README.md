@@ -12,11 +12,13 @@ $ git clone https://github.com/dulebapiotr/gdelt-analysis
 ```
 Zainstalowanie wymaganych paczek dla części backendowej:
 ```console
-$ pip install nie pamiętam co xD
+$ pip install flask
+$ pip install gdelt
+$ pip install pandas
 ```
 Zainstalowanie wymaganych paczek dla części frontendowej:
 ```console
-$ npm install nie pamiętam co xD
+$ npm install i
 ```
 Uruchomienie części backendowej:
 ```console
