@@ -28,7 +28,7 @@ $ python app.py
 
 Uruchomienie części frontendowej:
 ```console
-$ cd gdelt-analysis
+$ cd gdelt-analysis/frontend
 $ npm run serve
 ```
 ## Uruchomienie przykładowej analizy.
