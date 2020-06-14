@@ -12,12 +12,17 @@ import analysis_manager
 from Session import Session
 import json
 import database_csv as db
-
+from date_conversions import *
 app = Flask(__name__)
 
 gd1 = gdelt.gdelt(version=1)
 session: Session = Session()
 CORS(app, resources={r'/*': {'origins': '*'}})
+
+
+def trim_data(df: pd.DataFrame, date: str):
+    date = js_date_to_sql_date(date)
+    return df.loc[df['SQLDATE'] < date]
 
 
 def get_gdelt_data(start: str, stop: str) -> pd.DataFrame:
@@ -68,7 +73,7 @@ def new_session():
         df = get_gdelt_data(start, stop)
     global session
     session = Session()
-    session.add_data(df, "raw_result")
+    session.add_data(trim_data(df, start), "raw_result")
     return "succesfully got data"
 
 
@@ -93,13 +98,8 @@ def add_analysis():
     analysis_name = data.get('analysis_name')
     df_name = data.get('df_name')
     params = data.get('params')
-    print(type(params))
-    print(params)
     result_name, result = analysis_manager.add_analysis(session, df_name, analysis_name, params)
-    if isinstance(result, pd.DataFrame):
-        return result.to_json(orient="records")
-    else:
-        return jsonify(result)
+    return jsonify(result)
 
 
 if __name__ == '__main__':

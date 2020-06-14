@@ -9,7 +9,7 @@
         <b-spinner v-if="loading" style="margin: auto; width: 5rem; height: 5rem;" label="Large Spinner"></b-spinner>
         <br>
         <div id="arc" />
-        <line-chart :download="true" v-if="showDataPoly" :data="dataPoly" />
+        <line-chart :download="true" v-if="showLineChart" :data="lineChart" />
         <radial-menu
       style="margin: auto; margin-top: 300px; background-color: red"
       :itemSize="150"
@@ -122,7 +122,7 @@
          id="polynomial-fit"
          title="polynomial fit"
          hide-footer>
-        <b-form @submit="onSubmitPolynomialFit">
+        <b-form @submit="onSubmitPolynomialFitDf">
           <b-form-group id="form-calumnName-group"
                       label="Column Name:"
                       label-for="form-columnName-input">
@@ -375,8 +375,8 @@ export default {
       height: 900,
       margin: 40,
       svg: null,
-      dataPoly: [],
-      showDataPoly: false
+      lineChart: [],
+      showLineChart: false
     }
   },
   methods: {
@@ -432,10 +432,10 @@ export default {
         console.log(response.data);
         this.data = response.data ;
 
-        var cameo = this.countEventsForm.event_type
-        var cameo_labels = ["Make public statement", "Appeal", "Express intent to cooperate", "Consult", "Enagage in diplomatic cooperation", "Engage in material cooperation", "Prove Aid", "Yield", "Investigate", "Demand", "Disapprove", "Reject", "Threaten", "Protest", "Exhibit force posture", "Reduce relations", "Coerce", "Assault", "Fight", "Use mass violence"];
-        var caemo_name = cameo_labels[cameo]
-        window.alert("CAMEO: "+cameo+"\n Rodzaj wydarzenia: "+caemo_name+"\n Ilość zdarzeń : "+response.data)
+        const cameo = this.countEventsForm.event_type;
+        const cameo_labels = ["Make public statement", "Appeal", "Express intent to cooperate", "Consult", "Enagage in diplomatic cooperation", "Engage in material cooperation", "Prove Aid", "Yield", "Investigate", "Demand", "Disapprove", "Reject", "Threaten", "Protest", "Exhibit force posture", "Reduce relations", "Coerce", "Assault", "Fight", "Use mass violence"];
+        const cameo_name = cameo_labels[cameo];
+        window.alert("CAMEO: "+cameo+"\n Rodzaj wydarzenia: "+cameo_name+"\n Ilość zdarzeń : "+response.data)
 
 
 
@@ -454,7 +454,7 @@ export default {
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
-        console.log(response)
+        console.log(response);
         this.loading = false;
         var radius =  Math.min(this.width, this.height) / 2 - this.margin;
         if(this.svg == null) {
@@ -477,24 +477,24 @@ export default {
         // Compute the position of each group on the pie:
         var pie = d3.pie()
           .sort(null) // Do not sort group by size
-          .value(function(d) {return d.count; })
-        var data_ready = pie(response.data)
+          .value(function(d) {return d.count; });
+        var data_ready = pie(response.data);
         data_ready.forEach(cameoFunction);
         function cameoFunction(value, index){
           data_ready[index].cameo_label = cameo_labels[index] + " " + (data_ready[index].data.ratio*100).toString().substring(0,5)  + '%'
         }
-        console.log(data_ready)
+        console.log(data_ready);
 
 
         // The arc generator
         var arc = d3.arc()
           .innerRadius(radius * 0.0)         // This is the size of the donut hole
-          .outerRadius(radius * 0.8)
+          .outerRadius(radius * 0.8);
 
         // Another arc that won't be drawn. Just for labels positioning
         var outerArc = d3.arc()
           .innerRadius(radius * 0.9)
-          .outerRadius(radius * 0.9)
+          .outerRadius(radius * 0.9);
 
         // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
         this.svg
@@ -506,7 +506,7 @@ export default {
           .attr('fill', function(d){ return(color(d.cameo_label)) })
           .attr("stroke", "white")
           .style("stroke-width", "2px")
-          .style("opacity", 0.7)
+          .style("opacity", 0.7);
 
         // Add the polylines between chart and labels:
         this.svg
@@ -518,13 +518,13 @@ export default {
             .style("fill", "none")
             .attr("stroke-width", 1)
             .attr('points', function(d) {
-              var posA = arc.centroid(d) // line insertion in the slice
-              var posB = outerArc.centroid(d) // line break: we use the other arc generator that has been built only for that
+              var posA = arc.centroid(d); // line insertion in the slice
+              var posB = outerArc.centroid(d); // line break: we use the other arc generator that has been built only for that
               var posC = outerArc.centroid(d); // Label position = almost the same as posB
-              var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
+              var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2; // we need the angle to see if the X position will be at the extreme right or extreme left
               posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
               return [posA, posB, posC]
-            })
+            });
 
         // Add the polylines between chart and labels:
         this.svg
@@ -535,12 +535,12 @@ export default {
             .text( function(d) { console.log(d.data.event_type_cameo) ; return d.cameo_label } )
             .attr('transform', function(d) {
                 var pos = outerArc.centroid(d);
-                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
                 pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
                 return 'translate(' + pos + ')';
             })
             .style('text-anchor', function(d) {
-                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
                 return (midangle < Math.PI ? 'start' : 'end')
             })
       })
@@ -554,16 +554,22 @@ export default {
       this.loading = true;
       const payload = {
         df_name: "raw_result",
-        analysis_name: "value_in_time",
+        analysis_name: "filter",
         params: {
-          value: this.valueInTimeForm.column_name
+          value: this.valueInTimeForm.column_name,
+          // Todo: add filtering options
+          filters: [
+            {column_name: 'NumSources', relation: 'GT', reference: 2},
+          ]
         }
       };
       axios.post(`http://localhost:5000/add_analysis`, payload)
       .then(response => {
         this.loading = false;
-        console.log(response.data);
-        this.data = response.data;
+
+        console.log(response.data)
+        let dataframe = JSON.parse(response.data);
+        this.addToGraph(dataframe, this.polynomialFitForm.column_name)
       })
       .catch(e => {
         console.log(e);
@@ -600,21 +606,58 @@ export default {
             list.push(i);
         }
 
-        var dataa = []
+        var dataa = [];
 
         for(i of list) {
           dataa.push([i, lol(i)]);
         }
-        this.dataPoly = [
+        this.lineChart = [
   {name: this.polynomialFitForm.column_name, data: dataa}
 ];
-this.showDataPoly = true;
+this.showLineChart = true;
 
 // an
       })
       .catch(e => {
         console.log(e);
       })
+    },
+
+      addToGraph(dataframe, name){
+          let dataArray = [];
+          for (const i in dataframe.SQLDATE){
+              const date = dataframe.SQLDATE[i];
+              const value = dataframe[Object.keys(dataframe)[1]][i];
+              dataArray.push([date, value])
+          }
+          this.lineChart.push({
+              name:  name,
+              data: dataArray
+          });
+          this.showLineChart = true;
+      },
+    onSubmitPolynomialFitDf(evt) {
+      evt.preventDefault();
+      this.$refs.polynomialFitModal.hide();
+      this.loading = true;
+      const payload = {
+        df_name: "raw_result", // TODO: get from form
+        analysis_name: "polynomial_fit_df",
+        params: {
+          column_name: this.polynomialFitForm.column_name,
+          degree: this.polynomialFitForm.degree
+        }
+      };
+      axios.post(`http://localhost:5000/add_analysis`, payload)
+              .then(response => {
+                this.loading = false;
+                let dataframe = JSON.parse(response.data.dataframe);
+                this.addToGraph(dataframe, this.polynomialFitForm.column_name)
+
+              })
+              .catch(e => {
+                console.log(e);
+              })
     },
     onSubmitMeanStdVar(evt) {
       evt.preventDefault();

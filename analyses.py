@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Tuple
 import json
 import gdelt
 import pandas as pd
@@ -21,7 +21,7 @@ def count_events(data: pd.DataFrame, args: Dict):
     return int(checked.sum())
 
 
-def filter_events_relation(data: pd.DataFrame, args: Dict):
+def filter_events_relation(data: pd.DataFrame, args: Dict) -> pd.DataFrame:
     """
     sample args to find events of Goldstein Scale 0<=6 with at least 2 sources:
         {
@@ -56,23 +56,12 @@ def filter_events_relation(data: pd.DataFrame, args: Dict):
     return count_by_day(data, days)
 
 
-def count_by_day(data: pd.DataFrame, days: pd.DataFrame = pd.DataFrame()):
+def count_by_day(data: pd.DataFrame, days: pd.DataFrame = pd.DataFrame()) -> pd.DataFrame:
     grouped = data[['SQLDATE', 'GLOBALEVENTID']]
     grouped = grouped.groupby('SQLDATE', as_index=False).count()
     grouped = grouped.rename(columns={'GLOBALEVENTID': 'EVENTCOUNT'})
     # TODO: add zero values for days with no data
     return grouped
-
-
-# Deprecated (also wrong)
-# punkt 5 analiz ilościowych - dla danej kolumny(jej nazwy) pokazuje jej wartości w czasie (uporządkowanym),
-# nie wiem czy o to tutaj chodzi XD
-def value_in_time(data: pd.DataFrame, args: Dict):
-    # TODO: Error handling when invalid args
-    value = args['value']
-    result = data[[value, "SQLDATE"]]
-    result.sort_values(by=["SQLDATE"])
-    return result
 
 
 # tested!
@@ -94,16 +83,14 @@ def polynomial_fit(data: pd.DataFrame, args: Dict):
     return polynomial_fit_common(data, args).coef.tolist()
 
 
-def polynomial_fit_df(data: pd.DataFrame, args: Dict):
+def polynomial_fit_df(data: pd.DataFrame, args: Dict) -> pd.DataFrame:
     polynomial = polynomial_fit(data, args)
     dates = pd.DataFrame(data["SQLDATE"])
     values = [np.polynomial.polynomial.polyval(x, polynomial) for x in range(0, len(dates))]
     dates["polynomial_value"] = values
     dates.reset_index(drop=True, inplace=True)
     print(dates)
-    return {"coefficients": polynomial,
-            "dataframe": dates.to_json()
-            }
+    return dates
 
 
 # tested!
@@ -122,6 +109,18 @@ def get_mean_std_var(data: pd.DataFrame, args: Dict):
             "dataframe": dates.to_json()}
 
 
+def get_mean_std_var_df(data: pd.DataFrame, args: Dict) -> pd.DataFrame:
+    # TODO: Error handling when invalid args
+    column_name = args["column_name"]
+    if column_name not in data.columns:
+        raise Exception
+    vector = data[column_name]
+    dates = pd.DataFrame(data["SQLDATE"])
+    size = len(dates)
+    dates["mean"] = [vector.mean()] * size
+    return dates
+
+
 # tested!
 def get_median(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
@@ -136,14 +135,26 @@ def get_median_df(data: pd.DataFrame, args: Dict):
     size = len(data)
     median = get_median(data, args)
     dates.insert(1, "median", [median] * size, True)
-    return {
-        "median": median,
-        "dataframe": dates.to_json()
-    }
+    return dates
 
 
 # tested!
 def get_range_ptp(data: pd.DataFrame, args: Dict):
+    # TODO: Error handling when invalid args
+    column_name = args["column_name"]
+    if column_name not in data.columns:
+        raise Exception
+    vector = data[column_name]
+    amin = int(np.amin(vector))
+    amax = int(np.amax(vector))
+    ptp = int(np.ptp(vector))
+    return {"min": amin,
+            "max": amax,
+            "ptp": ptp
+            }
+
+
+def get_range_ptp_df(data: pd.DataFrame, args: Dict):
     # TODO: Error handling when invalid args
     column_name = args["column_name"]
     if column_name not in data.columns:
@@ -157,11 +168,7 @@ def get_range_ptp(data: pd.DataFrame, args: Dict):
     dates["min"] = [amin] * size
     dates["max"] = [amax] * size
     dates["ptp"] = [ptp] * size
-    return {"min": amin,
-            "max": amax,
-            "ptp": ptp,
-            "dataframe": dates.to_json()
-            }
+    return dates
 
 
 # tested!
@@ -181,10 +188,7 @@ def get_percentile_df(data: pd.DataFrame, args: Dict):
     size = len(data)
     percentile = get_percentile(data, args)
     dates["percentile"] = [percentile] * size
-    return {
-        "percentile": percentile,
-        "dataframe": dates.to_json()
-    }
+    return dates
 
 
 # zwraca datafame z ilościa i % występowania poszczególnych typów zdarzeń w danym datasecie
