@@ -10,7 +10,7 @@
   "dependencies": {
     "amcharts3": "^3.21.15",
     "ammap3": "^3.21.14",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
     "chart.js": "^2.9.3",
